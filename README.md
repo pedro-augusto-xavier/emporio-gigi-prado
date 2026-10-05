@@ -13,6 +13,7 @@ apps/
     drizzle/    migrações SQL geradas
     test/       testes (Vitest + PGlite, sem precisar de Docker)
 docs/LGPD.md    como o sistema trata dados pessoais
+docs/DEPLOY.md  como publicar (Neon + Render + Vercel)
 ```
 
 ## Roadmap
@@ -20,7 +21,7 @@ docs/LGPD.md    como o sistema trata dados pessoais
 - [x] **Fase 1:** base da API, autenticação, segurança, LGPD, cardápio, mesas e reservas
 - [x] **Fase 2:** pedidos para entrega e retirada, taxa definida ao confirmar, pagamento na entrega
 - [ ] **Fase 3:** front-end (site do cliente + painel)
-- [ ] **Fase 4:** deploy
+- [ ] **Fase 4:** deploy no Neon + Render + Vercel (preparado, veja [docs/DEPLOY.md](docs/DEPLOY.md))
 - [ ] Taxa automática por distância (aguardando definição)
 - [ ] Pagamento online (aguardando definição)
 

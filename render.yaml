@@ -1,0 +1,25 @@
+# Blueprint do Render: a API sobe a partir do Dockerfile a cada push na main.
+# O banco fica no Neon (PostgreSQL gerenciado); veja docs/DEPLOY.md.
+services:
+  - type: web
+    name: gigi-api
+    runtime: docker
+    plan: free
+    dockerfilePath: ./apps/api/Dockerfile
+    dockerContext: .
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: PORT
+        value: "3333"
+      - key: RUN_MIGRATIONS
+        value: "true"
+      - key: COOKIE_SECURE
+        value: "true"
+      - key: JWT_SECRET
+        generateValue: true
+      # Preenchidos no painel do Render (não ficam no git):
+      - key: DATABASE_URL
+        sync: false
+      - key: CORS_ORIGIN
+        sync: false
