@@ -1,0 +1,72 @@
+@import 'tailwindcss';
+
+/* Cores e fontes do Empório (veja docs/identidade-visual.md). */
+@theme {
+  --color-creme: #f7f1e3;
+  --color-palha: #efe3c2;
+  --color-madeira: #3b2a20;
+  --color-madeira-escura: #2a1d16;
+  --color-folha: #4f6b3a;
+  --color-folha-escura: #3e5530;
+  --color-pessego: #e9967a;
+
+  --font-serif: 'Cormorant Garamond', Georgia, serif;
+  --font-sans: 'Poppins', system-ui, sans-serif;
+  --font-script: 'Great Vibes', cursive;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-creme font-sans text-madeira antialiased;
+}
+
+/* Entrada do texto da foto principal. */
+@keyframes sobe {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Zoom lento na foto principal. */
+@keyframes aproxima {
+  from {
+    transform: scale(1.12);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+.animate-sobe {
+  animation: sobe 0.9s ease-out both;
+}
+
+.animate-aproxima {
+  animation: aproxima 8s ease-out both;
+}
+
+/* Esconde a barra de rolagem do carrossel (ele tem setas). */
+.sem-barra {
+  scrollbar-width: none;
+}
+.sem-barra::-webkit-scrollbar {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .animate-sobe,
+  .animate-aproxima {
+    animation: none;
+  }
+}

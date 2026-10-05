@@ -22,14 +22,14 @@ export const defaultRestaurantConfig: RestaurantConfig = {
   maxAdvanceDays: 30,
   maxPartySize: 12,
   // Empório Gigi Prado: aberto de quarta a domingo.
-  // TODO: os HORÁRIOS abaixo são provisórios. Confirmar com a Gigi.
+  // Horários tirados do Tripadvisor (out/2026). TODO: confirmar com a Gigi.
   openingHours: [
-    [['12:00', '18:00']], // domingo
+    [['10:00', '18:00']], // domingo
     [], // segunda: fechado
     [], // terça: fechado
-    [['12:00', '22:00']], // quarta
-    [['12:00', '22:00']], // quinta
-    [['12:00', '22:00']], // sexta
-    [['12:00', '22:00']], // sábado
+    [['11:00', '18:00']], // quarta
+    [['11:00', '18:00']], // quinta
+    [['11:00', '19:00']], // sexta
+    [['10:00', '19:00']], // sábado
   ],
 };

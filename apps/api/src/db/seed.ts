@@ -34,16 +34,82 @@ export async function seed(db: Db, admin: { email: string; password: string }) {
 
   const [anyCategory] = await db.select({ id: menuCategories.id }).from(menuCategories).limit(1);
   if (!anyCategory) {
-    // Cardápio do Empório Gigi Prado (fotos de 05/10/2026). Os pratos principais ainda faltam.
-    const [sugestoes, sobremesas, bebidas] = await db
+    // Cardápio do Empório Gigi Prado (fotos de 05/10/2026), na ordem do cardápio impresso.
+    const [sugestoes, entradas, peixes, carnes, rosti, vegetariano, infantil, massas, sobremesas, bebidas] = await db
       .insert(menuCategories)
       .values([
         { name: 'Sugestões do Chef', position: 1 },
-        { name: 'Sobremesas', position: 2 },
-        { name: 'Bebidas', position: 3 },
+        { name: 'Entradas', position: 2 },
+        { name: 'Peixes', position: 3 },
+        { name: 'Carnes', position: 4 },
+        { name: 'Rosti', position: 5 },
+        { name: 'Vegetariano', position: 6 },
+        { name: 'Infantil', position: 7 },
+        { name: 'Massas Empório', position: 8 },
+        { name: 'Sobremesas', position: 9 },
+        { name: 'Bebidas', position: 10 },
       ])
       .returning();
     await db.insert(menuItems).values([
+      {
+        categoryId: entradas!.id,
+        name: 'Entradinha da Casa',
+        description: 'Pães, manteiga, geleia especial, pastas, patês e vinagretes. Consulte as opções do dia',
+        priceCents: 3200,
+      },
+      { categoryId: entradas!.id, name: 'Bolinho de Bacalhau', description: 'Porção com 5 unidades', priceCents: 3300 },
+      {
+        categoryId: entradas!.id,
+        name: 'Mini Linguiças',
+        description: 'Porção. Acompanham mostardas e pães',
+        priceCents: 3300,
+      },
+      { categoryId: entradas!.id, name: 'Harumaki', description: 'Camarão ou legumes', priceCents: 3300 },
+      { categoryId: entradas!.id, name: 'Sopas', description: 'Consulte as opções do dia', priceCents: 2700 },
+      { categoryId: entradas!.id, name: 'Mini Salada', priceCents: 2000 },
+
+      {
+        categoryId: peixes!.id,
+        name: 'Peixe grelhado no azeite',
+        description: 'Especiarias e legumes assados',
+        priceCents: 8000,
+      },
+      {
+        categoryId: peixes!.id,
+        name: 'Truta grelhada com amêndoas',
+        description: 'Batatas gratinadas com queijo',
+        priceCents: 8200,
+      },
+
+      {
+        categoryId: carnes!.id,
+        name: 'Mignon grelhado ao molho francês',
+        description: 'Batatas arrepiadas',
+        priceCents: 8900,
+      },
+      { categoryId: carnes!.id, name: 'Estrogonofe de Mignon', priceCents: 7400 },
+
+      { categoryId: rosti!.id, name: 'Rosti de Camarão', priceCents: 7300 },
+      { categoryId: rosti!.id, name: 'Rosti de Cogumelos', priceCents: 7000 },
+
+      {
+        categoryId: vegetariano!.id,
+        name: 'Prato da Horta',
+        description: 'Legumes orgânicos, azeite e ervas',
+        priceCents: 6300,
+      },
+      { categoryId: vegetariano!.id, name: 'Estrogonofe de Cogumelos', priceCents: 6800 },
+
+      {
+        categoryId: infantil!.id,
+        name: 'Prato Infantil',
+        description: 'Consulte as opções do dia. Serve crianças até 12 anos',
+        priceCents: 4200,
+      },
+
+      { categoryId: massas!.id, name: 'Massa Empório com Camarões', priceCents: 7300 },
+      { categoryId: massas!.id, name: 'Massa Empório com Cogumelos', priceCents: 6000 },
+
       // Quadro de giz: muda com frequência, a equipe ativa/desativa pelo painel.
       {
         categoryId: sugestoes!.id,
