@@ -54,37 +54,39 @@ export function reservationEnd(start: Date, config: RestaurantConfig): Date {
   return new Date(start.getTime() + config.reservationDurationMinutes * MINUTE);
 }
 
-export interface TableOption {
-  id: string;
-  label: string;
-  seats: number;
-}
-
 export interface BookedInterval {
-  tableId: string;
+  partySize: number;
   startsAt: Date;
   endsAt: Date;
 }
 
 /**
- * Escolhe a menor mesa livre que comporta o grupo, para não "gastar"
- * uma mesa de 8 com um casal.
+ * Maior número de pessoas no restaurante ao mesmo tempo dentro do intervalo.
+ * A lotação só aumenta quando uma reserva começa, então basta olhar o início
+ * do intervalo e o início de cada reserva que cai dentro dele.
  */
-export function pickTable(
-  tables: readonly TableOption[],
+export function peakOccupancy(start: Date, end: Date, booked: readonly BookedInterval[]): number {
+  const moments = [start, ...booked.map((b) => b.startsAt).filter((t) => t > start && t < end)];
+  let peak = 0;
+  for (const moment of moments) {
+    const people = booked
+      .filter((b) => b.startsAt <= moment && moment < b.endsAt)
+      .reduce((sum, b) => sum + b.partySize, 0);
+    peak = Math.max(peak, people);
+  }
+  return peak;
+}
+
+/**
+ * As mesas da casa se juntam e se separam conforme o grupo, então o controle é
+ * pela lotação: cabe se, no pior momento da reserva, ninguém passa da capacidade.
+ */
+export function hasRoom(
+  capacity: number,
   partySize: number,
   start: Date,
   end: Date,
   booked: readonly BookedInterval[],
-): TableOption | null {
-  const candidates = tables
-    .filter((table) => table.seats >= partySize)
-    .sort((a, b) => a.seats - b.seats || a.label.localeCompare(b.label));
-
-  return (
-    candidates.find(
-      (table) =>
-        !booked.some((b) => b.tableId === table.id && b.startsAt < end && start < b.endsAt),
-    ) ?? null
-  );
+): boolean {
+  return peakOccupancy(start, end, booked) + partySize <= capacity;
 }

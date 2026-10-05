@@ -158,9 +158,8 @@ export const reservations = pgTable(
     /** Código curto que o cliente usa para consultar/cancelar sem precisar de conta. */
     code: text('code').notNull(),
     userId: uuid('user_id').references(() => users.id, { onDelete: 'set null' }),
-    tableId: uuid('table_id')
-      .notNull()
-      .references(() => diningTables.id, { onDelete: 'restrict' }),
+    /** Opcional: as mesas se juntam na hora, então a reserva controla só a lotação. */
+    tableId: uuid('table_id').references(() => diningTables.id, { onDelete: 'set null' }),
     name: text('name').notNull(),
     phone: text('phone').notNull(),
     email: text('email'),

@@ -9,6 +9,9 @@ export interface RestaurantConfig {
   /** Antecedência mínima para reservar. */
   minAdvanceMinutes: number;
   maxAdvanceDays: number;
+  /** Quantas pessoas cabem no restaurante ao mesmo tempo (as mesas se juntam conforme o grupo). */
+  seatCapacity: number;
+  /** Grupos maiores que isso combinam pelo WhatsApp. */
   maxPartySize: number;
   /** Índice = dia da semana (0 = domingo). Lista vazia = fechado. */
   openingHours: readonly (readonly OpeningWindow[])[];
@@ -20,7 +23,8 @@ export const defaultRestaurantConfig: RestaurantConfig = {
   reservationDurationMinutes: 90,
   minAdvanceMinutes: 60,
   maxAdvanceDays: 30,
-  maxPartySize: 12,
+  seatCapacity: 30,
+  maxPartySize: 8,
   // Empório Gigi Prado: aberto de quarta a domingo.
   // Horários tirados do Tripadvisor (out/2026). TODO: confirmar com a Gigi.
   openingHours: [

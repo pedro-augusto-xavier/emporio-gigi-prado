@@ -21,13 +21,9 @@ function reserve(payload: Record<string, unknown>, headers: Record<string, strin
 beforeAll(async () => {
   ctx = await createTestApp({ now: NOW });
   adminToken = await loginAs(ctx, 'admin');
-  for (const table of [
-    { label: 'Mesa 01', seats: 2 },
-    { label: 'Mesa 02', seats: 4 },
-  ]) {
-    await ctx.app.inject({ method: 'POST', url: '/api/admin/tables', headers: bearer(adminToken), payload: table });
-  }
 });
+
+// O restaurante de teste comporta 6 pessoas ao mesmo tempo e grupos de até 6 (veja fixtures.ts).
 afterAll(() => ctx.close());
 
 describe('reservas', () => {
@@ -43,24 +39,24 @@ describe('reservas', () => {
     expect((await reserve({ startsAt: '2026-10-07T09:30:00-03:00' })).json().error).toBe('INVALID_SLOT');
     expect((await reserve({ startsAt: '2026-10-07T11:00:00-03:00' })).statusCode).toBe(201);
     expect((await reserve({ startsAt: '2026-10-06T19:00:00-03:00' })).json().error).toBe('OUTSIDE_BOOKING_WINDOW');
-    expect((await reserve({ startsAt: '2026-10-08T19:00:00-03:00', partySize: 50 })).json().error).toBe(
-      'PARTY_TOO_LARGE',
-    );
+    const tooLarge = await reserve({ startsAt: '2026-10-08T19:00:00-03:00', partySize: 7 });
+    expect(tooLarge.json().error).toBe('PARTY_TOO_LARGE');
+    expect(tooLarge.json().message).toMatch(/WhatsApp/);
   });
 
-  it('distribui as mesas e avisa quando lota', async () => {
+  it('confirma na hora enquanto cabe gente e avisa quando lota', async () => {
     const startsAt = '2026-10-08T20:00:00-03:00';
     const first = await reserve({ startsAt });
     expect(first.statusCode).toBe(201);
     expect(first.json()).toMatchObject({ status: 'confirmed', partySize: 2 });
     expect(first.json().code).toMatch(/^[A-Z0-9]{8}$/);
 
-    expect((await reserve({ startsAt })).statusCode).toBe(201); // vai para a mesa de 4
-    const full = await reserve({ startsAt });
+    expect((await reserve({ startsAt, partySize: 4 })).statusCode).toBe(201); // 2 + 4 = 6, lotou
+    const full = await reserve({ startsAt, partySize: 1 });
     expect(full.statusCode).toBe(409);
-    expect(full.json().error).toBe('NO_AVAILABILITY');
+    expect(full.json()).toMatchObject({ error: 'NO_AVAILABILITY', message: expect.stringMatching(/lotado/) });
 
-    // 90 minutos depois as mesas estão livres de novo.
+    // 90 minutos depois o salão está livre de novo.
     expect((await reserve({ startsAt: '2026-10-08T21:30:00-03:00' })).statusCode).toBe(201);
   });
 
@@ -76,11 +72,12 @@ describe('reservas', () => {
     expect(at('2026-10-08T12:00:00-03:00')?.available).toBe(true);
   });
 
-  it('não deixa reservar a mesma mesa duas vezes com pedidos simultâneos', async () => {
+  it('não passa da lotação mesmo com várias reservas ao mesmo tempo', async () => {
     const startsAt = '2026-10-09T12:00:00-03:00';
+    // 5 grupos de 2 chegando juntos num salão de 6: só 3 cabem.
     const results = await Promise.all(Array.from({ length: 5 }, () => reserve({ startsAt })));
     const statuses = results.map((r) => r.statusCode).sort();
-    expect(statuses).toEqual([201, 201, 409, 409, 409]);
+    expect(statuses).toEqual([201, 201, 201, 409, 409]);
   });
 
   it('consulta e cancela pelo código + telefone, sem conta', async () => {
@@ -97,7 +94,7 @@ describe('reservas', () => {
     expect(lookup.statusCode).toBe(200);
     expect(lookup.json()).not.toHaveProperty('phone');
 
-    // Lotou a mesa de 4 -> outro grupo de 4 não consegue...
+    // 4 + 4 passa de 6 -> outro grupo de 4 não consegue...
     expect((await reserve({ startsAt, partySize: 4 })).statusCode).toBe(409);
 
     const cancel = await ctx.app.inject({
@@ -152,7 +149,7 @@ describe('reservas', () => {
     expect(reservation).toMatchObject({ status: 'cancelled', name: 'Titular removido', email: null });
   });
 
-  it('painel lista as reservas do dia com a mesa, e só para a equipe', async () => {
+  it('painel lista as reservas do dia, e só para a equipe', async () => {
     const list = await ctx.app.inject({
       method: 'GET',
       url: '/api/admin/reservations?date=2026-10-08',
@@ -160,7 +157,8 @@ describe('reservas', () => {
     });
     expect(list.statusCode).toBe(200);
     expect(list.json()).toHaveLength(3);
-    expect(list.json()[0].table.label).toMatch(/^Mesa/);
+    // Mesa é escolhida na hora pela equipe, então a reserva chega sem mesa.
+    expect(list.json()[0].table).toBeNull();
 
     const { accessToken } = await registerUser(ctx.app, { email: 'curioso@example.com' });
     const denied = await ctx.app.inject({

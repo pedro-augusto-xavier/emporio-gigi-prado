@@ -10,7 +10,9 @@ export const testRestaurantConfig: RestaurantConfig = {
   reservationDurationMinutes: 90,
   minAdvanceMinutes: 60,
   maxAdvanceDays: 30,
-  maxPartySize: 12,
+  // Capacidade pequena para os testes lotarem fácil.
+  seatCapacity: 6,
+  maxPartySize: 6,
   openingHours: [
     [['11:00', '16:00']], // domingo
     [], // segunda: fechado

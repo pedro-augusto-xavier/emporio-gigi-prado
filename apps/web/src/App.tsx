@@ -5,6 +5,7 @@ import { Header } from './components/Header';
 import { WhatsAppButton } from './components/WhatsAppButton';
 import { HomePage } from './pages/HomePage';
 import { MenuPage } from './pages/MenuPage';
+import { PrivacyPage } from './pages/PrivacyPage';
 
 /** Ao trocar de página, volta para o topo (a não ser que o endereço tenha #secao). */
 function ScrollToTop() {
@@ -24,6 +25,7 @@ export function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/cardapio" element={<MenuPage />} />
+          <Route path="/privacidade" element={<PrivacyPage />} />
           <Route path="*" element={<HomePage />} />
         </Routes>
       </main>

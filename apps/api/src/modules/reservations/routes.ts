@@ -14,12 +14,12 @@ import {
   isWithinBookingWindow,
   localDateOf,
   localToUtc,
-  pickTable,
+  hasRoom,
   reservationEnd,
   type BookedInterval,
 } from './availability.js';
 
-/** Status que ocupam a mesa. */
+/** Status que ocupam lugar no salão. */
 const BLOCKING_STATUSES = ['confirmed', 'seated'] as const;
 
 const dateSchema = z.iso.date('Data inválida, use AAAA-MM-DD');
@@ -49,13 +49,10 @@ function toPublicReservation(r: ReservationRow) {
   };
 }
 
-async function loadCapacity(db: Db, from: Date, to: Date) {
-  const tables = await db
-    .select({ id: diningTables.id, label: diningTables.label, seats: diningTables.seats })
-    .from(diningTables)
-    .where(eq(diningTables.active, true));
-  const booked: BookedInterval[] = await db
-    .select({ tableId: reservations.tableId, startsAt: reservations.startsAt, endsAt: reservations.endsAt })
+/** Reservas que ocupam lugar em algum momento entre `from` e `to`. */
+async function loadBookings(db: Db, from: Date, to: Date): Promise<BookedInterval[]> {
+  return db
+    .select({ partySize: reservations.partySize, startsAt: reservations.startsAt, endsAt: reservations.endsAt })
     .from(reservations)
     .where(
       and(
@@ -64,7 +61,6 @@ async function loadCapacity(db: Db, from: Date, to: Date) {
         gt(reservations.endsAt, from),
       ),
     );
-  return { tables, booked };
 }
 
 export const reservationRoutes: FastifyPluginAsync = async (app) => {
@@ -82,16 +78,16 @@ export const reservationRoutes: FastifyPluginAsync = async (app) => {
     const now = app.now();
     const dayStart = localToUtc(query.date, '00:00', config);
     const dayEnd = new Date(dayStart.getTime() + 24 * 60 * 60 * 1000);
-    const { tables, booked } = await loadCapacity(app.db, dayStart, dayEnd);
+    const booked = await loadBookings(app.db, dayStart, dayEnd);
 
     const slots = generateSlots(query.date, config)
       .filter((slot) => isWithinBookingWindow(slot, now, config))
       .map((slot) => ({
         startsAt: slot.toISOString(),
-        available: pickTable(tables, query.partySize, slot, reservationEnd(slot, config), booked) !== null,
+        available: hasRoom(config.seatCapacity, query.partySize, slot, reservationEnd(slot, config), booked),
       }));
 
-    return { date: query.date, partySize: query.partySize, slots };
+    return { date: query.date, partySize: query.partySize, maxPartySize: config.maxPartySize, slots };
   });
 
   /** Qualquer pessoa pode reservar, com ou sem conta. */
@@ -106,7 +102,7 @@ export const reservationRoutes: FastifyPluginAsync = async (app) => {
     if (body.partySize > config.maxPartySize) {
       throw badRequest(
         'PARTY_TOO_LARGE',
-        `Para grupos com mais de ${config.maxPartySize} pessoas, fale com o restaurante por telefone`,
+        `Para grupos com mais de ${config.maxPartySize} pessoas, fale com a gente pelo WhatsApp`,
       );
     }
     if (!isSlotStart(body.startsAt, config)) {
@@ -123,20 +119,20 @@ export const reservationRoutes: FastifyPluginAsync = async (app) => {
     const endsAt = reservationEnd(startsAt, config);
 
     const reservation = await app.db.transaction(async (tx) => {
-      // Trava por dia: duas reservas simultâneas não conseguem pegar a mesma mesa.
+      // Trava por dia: duas reservas ao mesmo tempo não conseguem passar da lotação.
       const lockKey = `reservations:${localDateOf(startsAt, config)}`;
       await tx.execute(sql`select pg_advisory_xact_lock(hashtext(${lockKey}))`);
 
-      const { tables, booked } = await loadCapacity(tx, startsAt, endsAt);
-      const table = pickTable(tables, body.partySize, startsAt, endsAt, booked);
-      if (!table) throw conflict('NO_AVAILABILITY', 'Não há mesa disponível nesse horário');
+      const booked = await loadBookings(tx, startsAt, endsAt);
+      if (!hasRoom(config.seatCapacity, body.partySize, startsAt, endsAt, booked)) {
+        throw conflict('NO_AVAILABILITY', 'Esse horário está lotado. Escolha outro horário, por favor');
+      }
 
       const [created] = await tx
         .insert(reservations)
         .values({
           code: generateCode(),
           userId: user?.sub ?? null,
-          tableId: table.id,
           name: body.name,
           phone: body.phone,
           email: body.email ?? null,
@@ -220,7 +216,8 @@ export const reservationRoutes: FastifyPluginAsync = async (app) => {
         table: { id: diningTables.id, label: diningTables.label },
       })
       .from(reservations)
-      .innerJoin(diningTables, eq(diningTables.id, reservations.tableId))
+      // Mesa é opcional (as mesas se juntam na hora): reserva sem mesa vem com table = null.
+      .leftJoin(diningTables, eq(diningTables.id, reservations.tableId))
       .where(and(gte(reservations.startsAt, dayStart), lt(reservations.startsAt, dayEnd)))
       .orderBy(asc(reservations.startsAt));
   });

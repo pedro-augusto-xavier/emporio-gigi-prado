@@ -6,8 +6,9 @@ export default defineConfig({
     // Cada arquivo de teste sobe seu próprio Postgres em memória (PGlite).
     testTimeout: 20_000,
     hookTimeout: 60_000,
-    // Cada PGlite usa bastante memória; mais de um ao mesmo tempo derruba os testes
-    // quando o PC já está com o site e a API abertos. Um por vez é mais lento, mas confiável.
+    // Cada PGlite (Postgres em memória) é pesado. Rodar um arquivo por vez, reaproveitando o mesmo
+    // processo, evita falta de memória quando o PC já está com o site e a API abertos.
     maxWorkers: 1,
+    isolate: false,
   },
 });

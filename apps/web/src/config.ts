@@ -22,6 +22,10 @@ export const openingHours = [
 /** Dias da semana em que o restaurante não abre (0 = domingo). */
 export const closedWeekdays = [1, 2];
 
+/** Grupos maiores que isso combinam pelo WhatsApp. Igual a maxPartySize em apps/api/src/config/restaurant.ts. */
+export const onlineMaxParty = 8;
+export const maxAdvanceDays = 30;
+
 export function whatsappLink(message = 'Olá! Vim pelo site do Empório.') {
   return `https://wa.me/${restaurant.whatsappNumber}?text=${encodeURIComponent(message)}`;
 }
