@@ -1,0 +1,1 @@
+ALTER TABLE "menu_items" ALTER COLUMN "price_cents" DROP NOT NULL;

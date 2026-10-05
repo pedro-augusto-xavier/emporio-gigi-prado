@@ -1,0 +1,4 @@
+# Quebra de linha padrão Linux (LF) no repositório, igual em Windows, CI e Docker.
+* text=auto eol=lf
+*.png binary
+*.jpg binary
