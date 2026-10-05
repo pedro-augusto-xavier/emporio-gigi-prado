@@ -1,21 +1,24 @@
 import { useEffect, useState } from 'react';
+import { Link, useLocation } from 'react-router';
 import { instagramLink, whatsappLink } from '../config';
 import { CloseIcon, InstagramIcon, MenuIcon, WhatsAppIcon } from './icons';
 import { Logo } from './Logo';
 
+// Links com /#secao funcionam de qualquer página: levam para a inicial e rolam até a seção.
 const links = [
-  { href: '#especialidades', label: 'Especialidades' },
-  { href: '#bebidas', label: 'Bebidas' },
-  { href: '#eventos', label: 'Eventos' },
-  { href: '#galeria', label: 'Galeria' },
-  { href: '#avaliacoes', label: 'Avaliações' },
-  { href: '#duvidas', label: 'Dúvidas' },
+  { to: '/cardapio', label: 'Cardápio' },
+  { to: '/#especialidades', label: 'Especialidades' },
+  { to: '/#bebidas', label: 'Bebidas' },
+  { to: '/#eventos', label: 'Eventos' },
+  { to: '/#avaliacoes', label: 'Avaliações' },
+  { to: '/#duvidas', label: 'Dúvidas' },
 ];
 
-/** Transparente em cima da foto; ao rolar a página ganha fundo cor de madeira. */
+/** Na página inicial fica transparente em cima da foto; ao rolar (ou em outras páginas) ganha fundo madeira. */
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const { pathname } = useLocation();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -24,7 +27,7 @@ export function Header() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const solid = scrolled || menuOpen;
+  const solid = scrolled || menuOpen || pathname !== '/';
 
   return (
     <header
@@ -34,15 +37,15 @@ export function Header() {
       }`}
     >
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
-        <a href="#inicio" aria-label="Empório Gigi Prado, início">
+        <Link to="/" aria-label="Empório Gigi Prado, início">
           <Logo />
-        </a>
+        </Link>
 
-        <nav className="hidden items-center gap-8 lg:flex" aria-label="Principal">
+        <nav className="hidden items-center gap-7 lg:flex" aria-label="Principal">
           {links.map((link) => (
-            <a key={link.href} href={link.href} className="text-sm tracking-wide hover:text-palha">
+            <Link key={link.to} to={link.to} className="text-sm tracking-wide hover:text-palha">
               {link.label}
-            </a>
+            </Link>
           ))}
         </nav>
 
@@ -65,12 +68,12 @@ export function Header() {
           >
             <WhatsAppIcon className="h-4 w-4" />
           </a>
-          <a
-            href="#reservar"
+          <Link
+            to="/#reservar"
             className="ml-3 rounded-full bg-folha px-5 py-2 text-sm font-medium hover:bg-folha-escura"
           >
             Reservar mesa
-          </a>
+          </Link>
         </div>
 
         <button
@@ -87,22 +90,22 @@ export function Header() {
       {menuOpen && (
         <nav className="border-t border-creme/10 px-4 pb-6 lg:hidden" aria-label="Principal (celular)">
           {links.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
+            <Link
+              key={link.to}
+              to={link.to}
               onClick={() => setMenuOpen(false)}
               className="block py-3 text-lg"
             >
               {link.label}
-            </a>
+            </Link>
           ))}
-          <a
-            href="#reservar"
+          <Link
+            to="/#reservar"
             onClick={() => setMenuOpen(false)}
             className="mt-3 block rounded-full bg-folha py-3 text-center font-medium"
           >
             Reservar mesa
-          </a>
+          </Link>
         </nav>
       )}
     </header>

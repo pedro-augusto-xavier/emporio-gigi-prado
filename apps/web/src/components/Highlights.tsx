@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react';
+import { Link } from 'react-router';
 import { whatsappLink } from '../config';
 import { Reveal } from './Reveal';
 
@@ -11,15 +13,26 @@ interface CardProps {
 }
 
 /** Cartão com foto de fundo e texto por cima (inspirado no site de referência). */
-function PhotoCard({ image, alt, label, title, text, href }: CardProps) {
+/** Link para outra página do site, seção desta página (#) ou site externo. */
+function CardLink({ href, className, children }: { href: string; className: string; children: ReactNode }) {
+  if (href.startsWith('/')) {
+    return (
+      <Link to={href} className={className}>
+        {children}
+      </Link>
+    );
+  }
   const external = href.startsWith('http');
   return (
-    <a
-      href={href}
-      target={external ? '_blank' : undefined}
-      rel={external ? 'noreferrer' : undefined}
-      className="group relative flex h-full min-h-72 items-end overflow-hidden rounded-2xl text-creme sm:min-h-80"
-    >
+    <a href={href} target={external ? '_blank' : undefined} rel={external ? 'noreferrer' : undefined} className={className}>
+      {children}
+    </a>
+  );
+}
+
+function PhotoCard({ image, alt, label, title, text, href }: CardProps) {
+  return (
+    <CardLink href={href} className="group relative flex h-full min-h-72 items-end overflow-hidden rounded-2xl text-creme sm:min-h-80">
       <img
         src={image}
         alt={alt}
@@ -32,7 +45,7 @@ function PhotoCard({ image, alt, label, title, text, href }: CardProps) {
         <h3 className="mt-2 font-serif text-3xl font-semibold sm:text-4xl">{title}</h3>
         <p className="mt-2 max-w-lg text-sm text-creme/90 sm:text-base">{text}</p>
       </div>
-    </a>
+    </CardLink>
   );
 }
 
@@ -46,8 +59,8 @@ export function Highlights() {
             alt="Peixe grelhado servido com legumes"
             label="Cozinha"
             title="Sugestões do Chef"
-            text="Pratos especiais escritos à mão no quadro, que mudam de tempos em tempos."
-            href="#especialidades"
+            text="Pratos especiais escritos à mão no quadro, que mudam de tempos em tempos. Veja no cardápio."
+            href="/cardapio"
           />
         </Reveal>
         <Reveal delay={150}>

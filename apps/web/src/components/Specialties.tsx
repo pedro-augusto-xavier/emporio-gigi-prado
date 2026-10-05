@@ -1,3 +1,4 @@
+import { Link } from 'react-router';
 import { Reveal } from './Reveal';
 
 /** Pratos tirados do cardápio impresso e do quadro de sugestões (out/2026). */
@@ -74,6 +75,15 @@ export function Specialties() {
             </Reveal>
           ))}
         </div>
+
+        <Reveal className="mt-12 text-center">
+          <Link
+            to="/cardapio"
+            className="inline-block rounded-full bg-creme px-8 py-3 font-medium tracking-wide text-madeira uppercase hover:bg-palha"
+          >
+            Ver cardápio completo
+          </Link>
+        </Reveal>
       </div>
     </section>
   );

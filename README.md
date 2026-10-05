@@ -12,6 +12,7 @@ apps/
       db/       schema, migrações, seed
     drizzle/    migrações SQL geradas
     test/       testes (Vitest + PGlite, sem precisar de Docker)
+  web/          Site: React + Vite + Tailwind (páginas em src/pages, seções em src/components)
 docs/LGPD.md    como o sistema trata dados pessoais
 docs/DEPLOY.md  como publicar (Neon + Render + Vercel)
 ```
@@ -20,7 +21,7 @@ docs/DEPLOY.md  como publicar (Neon + Render + Vercel)
 
 - [x] **Fase 1:** base da API, autenticação, segurança, LGPD, cardápio, mesas e reservas
 - [x] **Fase 2:** pedidos para entrega e retirada, taxa definida ao confirmar, pagamento na entrega
-- [ ] **Fase 3:** front-end (site do cliente + painel)
+- [ ] **Fase 3:** front-end: página inicial ✅ · cardápio ✅ · reservas · pedidos · painel da Gigi
 - [ ] **Fase 4:** deploy no Neon + Render + Vercel (preparado, veja [docs/DEPLOY.md](docs/DEPLOY.md))
 - [ ] Taxa automática por distância (aguardando definição)
 - [ ] Pagamento online (aguardando definição)
@@ -33,12 +34,19 @@ um Postgres embutido, salvo na pasta `apps/api/.data`.
 ```bash
 npm install
 cp .env.example .env          # já vem pronto para desenvolvimento
-npm run db:seed -w apps/api   # cria admin, mesas e cardápio de exemplo
-npm run dev:api               # API em http://localhost:3333 (reinicia sozinha ao salvar)
+npm run db:seed -w apps/api   # cria admin, mesas e o cardápio do Empório
 npm test                      # roda todos os testes
 ```
 
-Quer zerar o banco de desenvolvimento? Apague a pasta `apps/api/.data` e rode o seed de novo.
+Depois, abra **dois terminais** (o site precisa da API para mostrar o cardápio):
+
+```bash
+npm run dev:api               # terminal 1: API em http://localhost:3333
+npm run dev:web               # terminal 2: site em http://localhost:5173
+```
+
+Quer zerar o banco de desenvolvimento? **Pare a API** (Ctrl+C), apague a pasta `apps/api/.data` e rode o
+seed de novo. O banco embutido só pode ser aberto por um programa de cada vez.
 
 Mudou o `schema.ts`? Gere a migração com `npm run db:generate -w apps/api`.
 

@@ -1,32 +1,31 @@
-import { Drinks } from './components/Drinks';
-import { Events } from './components/Events';
-import { Faq } from './components/Faq';
+import { useEffect } from 'react';
+import { Route, Routes, useLocation } from 'react-router';
 import { Footer } from './components/Footer';
-import { Gallery } from './components/Gallery';
 import { Header } from './components/Header';
-import { Hero } from './components/Hero';
-import { Highlights } from './components/Highlights';
-import { PetFriendly } from './components/PetFriendly';
-import { ReservationForm } from './components/ReservationForm';
-import { Reviews } from './components/Reviews';
-import { Specialties } from './components/Specialties';
 import { WhatsAppButton } from './components/WhatsAppButton';
+import { HomePage } from './pages/HomePage';
+import { MenuPage } from './pages/MenuPage';
+
+/** Ao trocar de página, volta para o topo (a não ser que o endereço tenha #secao). */
+function ScrollToTop() {
+  const { pathname, hash } = useLocation();
+  useEffect(() => {
+    if (!hash) window.scrollTo(0, 0);
+  }, [pathname, hash]);
+  return null;
+}
 
 export function App() {
   return (
     <>
+      <ScrollToTop />
       <Header />
       <main>
-        <Hero />
-        <Highlights />
-        <Specialties />
-        <Drinks />
-        <Gallery />
-        <Events />
-        <PetFriendly />
-        <Reviews />
-        <ReservationForm />
-        <Faq />
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/cardapio" element={<MenuPage />} />
+          <Route path="*" element={<HomePage />} />
+        </Routes>
       </main>
       <Footer />
       <WhatsAppButton />

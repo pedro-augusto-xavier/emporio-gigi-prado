@@ -1,15 +1,16 @@
+import { Link } from 'react-router';
 import { instagramLink, mapsLink, openingHours, restaurant, whatsappLink } from '../config';
 import { InstagramIcon, PinIcon, WhatsAppIcon } from './icons';
 import { Logo } from './Logo';
 
 const navLinks = [
-  { href: '#especialidades', label: 'Especialidades' },
-  { href: '#bebidas', label: 'Bebidas' },
-  { href: '#eventos', label: 'Eventos e música' },
-  { href: '#galeria', label: 'Galeria' },
-  { href: '#avaliacoes', label: 'Avaliações' },
-  { href: '#reservar', label: 'Reservas' },
-  { href: '#duvidas', label: 'Dúvidas' },
+  { to: '/cardapio', label: 'Cardápio' },
+  { to: '/#especialidades', label: 'Especialidades' },
+  { to: '/#bebidas', label: 'Bebidas' },
+  { to: '/#eventos', label: 'Eventos e música' },
+  { to: '/#avaliacoes', label: 'Avaliações' },
+  { to: '/#reservar', label: 'Reservas' },
+  { to: '/#duvidas', label: 'Dúvidas' },
 ];
 
 function ColumnTitle({ children }: { children: string }) {
@@ -32,10 +33,10 @@ export function Footer() {
           <ColumnTitle>Navegue</ColumnTitle>
           <ul className="mt-5 space-y-3">
             {navLinks.map((link) => (
-              <li key={link.href}>
-                <a href={link.href} className="text-creme/85 hover:text-palha">
+              <li key={link.to}>
+                <Link to={link.to} className="text-creme/85 hover:text-palha">
                   {link.label}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>

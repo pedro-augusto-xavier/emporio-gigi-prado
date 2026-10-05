@@ -1,4 +1,5 @@
-import { restaurant, whatsappLink } from '../config';
+import { Link } from 'react-router';
+import { restaurant } from '../config';
 
 export function Hero() {
   return (
@@ -30,14 +31,12 @@ export function Hero() {
           <a href="#reservar" className="rounded-full bg-folha px-7 py-3 font-medium hover:bg-folha-escura">
             Reservar mesa
           </a>
-          <a
-            href={whatsappLink()}
-            target="_blank"
-            rel="noreferrer"
+          <Link
+            to="/cardapio"
             className="rounded-full border border-creme/70 px-7 py-3 font-medium hover:bg-creme/10"
           >
-            Falar no WhatsApp
-          </a>
+            Ver cardápio
+          </Link>
         </div>
       </div>
     </section>
