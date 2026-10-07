@@ -55,8 +55,8 @@ export function Highlights() {
       <div className="grid gap-5 md:grid-cols-2">
         <Reveal>
           <PhotoCard
-            image="/fotos/prato-peixe.webp"
-            alt="Peixe grelhado servido com legumes"
+            image="/fotos/casa-camarao-baroa.webp"
+            alt="Camarão grelhado com creme de baroa, uma das sugestões do chef"
             label="Cozinha"
             title="Sugestões do Chef"
             text="Pratos especiais escritos à mão no quadro, que mudam de tempos em tempos. Veja no cardápio."
@@ -65,8 +65,8 @@ export function Highlights() {
         </Reveal>
         <Reveal delay={150}>
           <PhotoCard
-            image="/fotos/paes.webp"
-            alt="Pães artesanais em cestos de vime"
+            image="/fotos/casa-mesa-de-festa.webp"
+            alt="Mesa de festa com bolo decorado e docinhos feitos no Empório"
             label="Empório"
             title="Encomendas"
             text="Pães artesanais, bolos, tortas, quiches, sopas e caldos para levar para casa."
@@ -75,8 +75,8 @@ export function Highlights() {
         </Reveal>
         <Reveal>
           <PhotoCard
-            image="/fotos/brinde-grupo.webp"
-            alt="Grupo de amigos brindando com taças de espumante"
+            image="/fotos/casa-salao-espumante.webp"
+            alt="Salão do Empório com espumante no balde de gelo"
             label="Eventos"
             title="Vai comemorar?"
             text="Faça sua festa conosco: grupos, aniversários e encontros de família e amigos, com espumante para o brinde."

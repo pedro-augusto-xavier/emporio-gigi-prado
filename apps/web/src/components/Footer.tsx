@@ -77,7 +77,7 @@ export function Footer() {
         </div>
       </div>
       <p className="border-t border-creme/10 py-5 text-center text-xs text-creme/50">
-        © {new Date().getFullYear()} {restaurant.name}. Fotos ilustrativas de pratos: Unsplash. ·{' '}
+        © {new Date().getFullYear()} {restaurant.name}. Algumas fotos ilustrativas: Unsplash. ·{' '}
         <Link to="/privacidade" className="underline hover:text-creme">
           Política de Privacidade
         </Link>

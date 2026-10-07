@@ -7,3 +7,6 @@ coverage/
 *.log
 .DS_Store
 .data/
+
+# Fotos originais da Gigi (pesadas): só as versões leves em apps/web/public/fotos vão para o git
+fotos-da-gigi/

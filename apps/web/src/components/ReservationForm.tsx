@@ -121,7 +121,7 @@ export function ReservationForm() {
 
   return (
     <section id="reservar" className="relative scroll-mt-20 overflow-hidden py-20">
-      <img src="/fotos/massa-fettuccine.webp" alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
+      <img src="/fotos/casa-massa-camarao-molho.webp" alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
       <div className="absolute inset-0 bg-madeira-escura/70" />
 
       <div className="relative mx-auto grid max-w-6xl items-center gap-10 px-4 sm:px-6 lg:grid-cols-2">

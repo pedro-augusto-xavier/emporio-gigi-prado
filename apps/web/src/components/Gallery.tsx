@@ -1,13 +1,13 @@
 import { Reveal } from './Reveal';
 
-/** As duas primeiras fotos são do próprio Empório; as outras são ilustrativas (Unsplash). */
+/** Fotos do próprio Empório. */
 const photos = [
-  { src: '/fotos/salao-principal.webp', alt: 'Salão do Empório com lustres e mesas com toalhas rendadas', title: 'Ambiente acolhedor' },
-  { src: '/fotos/varanda.webp', alt: 'Varanda do Empório com janelas de vidro de frente para o jardim', title: 'Varanda para o jardim' },
-  { src: '/fotos/massa-camarao.webp', alt: 'Massa com camarões e manjericão', title: 'Pratos da casa' },
-  { src: '/fotos/sobremesa-chocolate.webp', alt: 'Vitrine com doces de chocolate', title: 'Sobremesas irresistíveis' },
-  { src: '/fotos/cafe.webp', alt: 'Xícara de café com desenho de folha na espuma', title: 'Cafés e chás' },
-  { src: '/fotos/bolo-festa.webp', alt: 'Bolo de chocolate decorado', title: 'Bolos por encomenda' },
+  { src: '/fotos/casa-fachada-dia.webp', alt: 'Fachada de madeira do Empório entre árvores', title: 'Nossa casa' },
+  { src: '/fotos/salao-principal.webp', alt: 'Salão com lustres e mesas com toalhas rendadas', title: 'Ambiente acolhedor' },
+  { src: '/fotos/varanda.webp', alt: 'Varanda com janelas de vidro de frente para o jardim', title: 'Varanda para o jardim' },
+  { src: '/fotos/casa-fachada-noite.webp', alt: 'Fachada do Empório iluminada à noite', title: 'À noite' },
+  { src: '/fotos/casa-truta-cogumelos.webp', alt: 'Truta com cogumelos e batatinhas', title: 'Truta com cogumelos' },
+  { src: '/fotos/casa-entradinha.webp', alt: 'Entradinha da casa com pastas e patês', title: 'Entradinha da casa' },
 ];
 
 export function Gallery() {

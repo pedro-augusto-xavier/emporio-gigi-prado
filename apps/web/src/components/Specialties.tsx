@@ -5,8 +5,8 @@ import { Reveal } from './Reveal';
 const specialties = [
   {
     title: 'Massas',
-    image: '/fotos/massa-prato.webp',
-    alt: 'Prato de massa ao molho cremoso',
+    image: '/fotos/casa-massa-camarao.webp',
+    alt: 'Massa com camarões ao molho de tomate',
     dishes: [
       'Massa Empório com Camarões',
       'Massa Empório com Cogumelos',
@@ -15,8 +15,8 @@ const specialties = [
   },
   {
     title: 'Peixes',
-    image: '/fotos/prato-peixe.webp',
-    alt: 'Peixe grelhado com legumes',
+    image: '/fotos/casa-truta-amendoas.webp',
+    alt: 'Truta grelhada com amêndoas e batatas gratinadas',
     dishes: [
       'Peixe grelhado no azeite, com especiarias e legumes assados',
       'Truta grelhada com amêndoas e batatas gratinadas',
@@ -25,8 +25,8 @@ const specialties = [
   },
   {
     title: 'Sobremesas',
-    image: '/fotos/sobremesa-chocolate.webp',
-    alt: 'Doces de chocolate',
+    image: '/fotos/casa-bolo-decorado.webp',
+    alt: 'Bolo decorado com flores, feito no Empório',
     dishes: [
       'Profiteroles com sorvete e calda quente de chocolate',
       'Morango Empório: massa choux, creme especial e calda de morango',

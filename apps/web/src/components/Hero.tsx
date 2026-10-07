@@ -4,14 +4,28 @@ import { restaurant } from '../config';
 export function Hero() {
   return (
     <section id="inicio" className="relative flex min-h-[92svh] items-end overflow-hidden text-creme">
-      <img
-        src="/fotos/prato-carne.webp"
-        alt="Filé mignon grelhado com legumes servido à mesa"
-        className="animate-aproxima absolute inset-0 h-full w-full object-cover"
-        fetchPriority="high"
-      />
-      {/* Escurece a foto para o texto ficar legível. */}
+      {/* As fotos da casa são "em pé": no celular cabe uma; no computador, três lado a lado. */}
+      <div className="animate-aproxima absolute inset-0 grid md:grid-cols-3">
+        <img
+          src="/fotos/casa-mignon-cogumelos.webp"
+          alt="Filé mignon ao molho com cogumelos e batatas gratinadas, na mesa de madeira do Empório"
+          className="h-full w-full object-cover"
+          fetchPriority="high"
+        />
+        <img
+          src="/fotos/casa-massa-camarao.webp"
+          alt="Massa com camarões ao molho de tomate"
+          className="hidden h-full w-full object-cover md:block"
+        />
+        <img
+          src="/fotos/casa-camarao-baroa.webp"
+          alt="Camarão grelhado com creme de baroa"
+          className="hidden h-full w-full object-cover md:block"
+        />
+      </div>
+      {/* Escurece as fotos (mais à esquerda e embaixo, onde fica o texto). */}
       <div className="absolute inset-0 bg-linear-to-t from-madeira-escura/90 via-madeira-escura/45 to-madeira-escura/40" />
+      <div className="absolute inset-0 hidden bg-linear-to-r from-madeira-escura/70 via-madeira-escura/20 to-transparent md:block" />
 
       <div className="relative mx-auto w-full max-w-6xl px-4 pb-20 sm:px-6 sm:pb-28">
         <p className="animate-sobe mb-4 text-sm tracking-[0.3em] text-palha uppercase">
