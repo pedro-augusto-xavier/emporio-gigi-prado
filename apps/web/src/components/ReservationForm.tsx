@@ -41,7 +41,16 @@ type SlotsState =
   | { status: 'ready'; slots: Slot[] };
 
 const inputClass =
-  'mt-1 w-full rounded-lg border border-madeira/20 bg-white px-4 py-3 text-madeira outline-none focus:border-folha focus:ring-2 focus:ring-folha/30';
+  'mt-1 block w-full min-w-0 rounded-lg border border-madeira/20 bg-white px-4 py-3 text-base text-madeira outline-none focus:border-folha focus:ring-2 focus:ring-folha/30';
+
+/**
+ * Campos de uma linha (texto, data, lista) com a mesma altura. O celular desenha o campo de data
+ * do jeito dele (o iPhone ignora largura e altura), então tiramos a aparência nativa.
+ */
+/** Lista mantém a aparência nativa para não perder a setinha. */
+const selectClass = `${inputClass} h-12 px-2.5 py-0 text-[15px] sm:px-4 sm:text-base`;
+
+const fieldClass = `${inputClass} h-12 appearance-none py-0 [&[type=date]]:px-3 sm:[&[type=date]]:px-4 [&::-webkit-date-and-time-value]:text-left [&::-webkit-date-and-time-value]:leading-[3rem]`;
 
 const TOO_BIG = String(onlineMaxParty + 1);
 
@@ -173,7 +182,7 @@ export function ReservationForm() {
               </div>
             ) : (
               <form onSubmit={handleSubmit} aria-label="Reserva de mesa" noValidate>
-                <div className="grid gap-4 sm:grid-cols-2">
+                <div className="grid grid-cols-[1.25fr_1fr] gap-3 sm:grid-cols-2 sm:gap-4">
                   <label>
                     <span className="text-sm font-medium">Dia *</span>
                     <input
@@ -184,16 +193,19 @@ export function ReservationForm() {
                       max={isoDate(maxAdvanceDays)}
                       value={date}
                       onChange={(event) => setDate(event.target.value)}
-                      className={inputClass}
+                      className={fieldClass}
                     />
                   </label>
                   <label>
-                    <span className="text-sm font-medium">Quantas pessoas? *</span>
+                    <span className="text-sm font-medium">
+                        <span className="sm:hidden">Pessoas *</span>
+                        <span className="hidden sm:inline">Quantas pessoas? *</span>
+                      </span>
                     <select
                       name="people"
                       value={people}
                       onChange={(event) => setPeople(event.target.value)}
-                      className={inputClass}
+                      className={selectClass}
                     >
                       {Array.from({ length: onlineMaxParty }, (_, i) => i + 1).map((n) => (
                         <option key={n} value={n}>
@@ -234,7 +246,7 @@ export function ReservationForm() {
                     <div className="mt-5 grid gap-4 sm:grid-cols-2">
                       <label className="sm:col-span-2">
                         <span className="text-sm font-medium">Nome *</span>
-                        <input name="name" required minLength={2} autoComplete="name" className={inputClass} />
+                        <input name="name" required minLength={2} autoComplete="name" className={fieldClass} />
                       </label>
                       <label>
                         <span className="text-sm font-medium">Telefone / WhatsApp *</span>
@@ -244,12 +256,12 @@ export function ReservationForm() {
                           required
                           autoComplete="tel"
                           placeholder="(22) 99999-9999"
-                          className={inputClass}
+                          className={fieldClass}
                         />
                       </label>
                       <label>
                         <span className="text-sm font-medium">E-mail (opcional)</span>
-                        <input name="email" type="email" autoComplete="email" className={inputClass} />
+                        <input name="email" type="email" autoComplete="email" className={fieldClass} />
                       </label>
                       <label className="sm:col-span-2">
                         <span className="text-sm font-medium">Observações</span>
