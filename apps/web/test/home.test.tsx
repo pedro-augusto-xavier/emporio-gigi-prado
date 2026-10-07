@@ -84,3 +84,22 @@ describe('página inicial', () => {
     for (const img of screen.getAllByRole('img')) expect(img.getAttribute('alt')).toBeTruthy();
   });
 });
+
+describe('celular e Google', () => {
+  it('barra fixa do celular tem Reservar, Cardápio e WhatsApp', () => {
+    renderHome();
+    const bar = screen.getByRole('navigation', { name: 'Ações rápidas' });
+    expect(bar.textContent).toContain('Reservar mesa');
+    expect(bar.textContent).toContain('Cardápio');
+    expect(bar.querySelector('a[href^="https://wa.me/5522992339210"]')).toBeTruthy();
+  });
+
+  it('cada página tem o seu título na aba do navegador', () => {
+    render(
+      <MemoryRouter initialEntries={['/privacidade']}>
+        <App />
+      </MemoryRouter>,
+    );
+    expect(document.title).toBe('Política de Privacidade · Empório Gigi Prado');
+  });
+});

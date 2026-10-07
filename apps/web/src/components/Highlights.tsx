@@ -32,7 +32,7 @@ function CardLink({ href, className, children }: { href: string; className: stri
 
 function PhotoCard({ image, alt, label, title, text, href }: CardProps) {
   return (
-    <CardLink href={href} className="group relative flex h-full min-h-72 items-end overflow-hidden rounded-2xl text-creme sm:min-h-80">
+    <CardLink href={href} className="group relative flex h-full min-h-60 items-end overflow-hidden rounded-2xl text-creme sm:min-h-80">
       <img
         src={image}
         alt={alt}
@@ -51,8 +51,8 @@ function PhotoCard({ image, alt, label, title, text, href }: CardProps) {
 
 export function Highlights() {
   return (
-    <section id="destaques" className="mx-auto max-w-6xl scroll-mt-24 px-4 py-20 sm:px-6">
-      <div className="grid gap-5 md:grid-cols-2">
+    <section id="destaques" className="mx-auto max-w-6xl scroll-mt-24 px-4 py-12 sm:px-6 md:py-20">
+      <div className="grid gap-4 md:grid-cols-2 md:gap-5">
         <Reveal>
           <PhotoCard
             image="/fotos/casa-camarao-baroa.webp"
@@ -83,7 +83,7 @@ export function Highlights() {
             href="#eventos"
           />
         </Reveal>
-        <Reveal delay={150}>
+        <Reveal delay={150} className="hidden md:block">
           <div className="flex h-full min-h-72 flex-col items-center justify-center rounded-2xl border-2 border-madeira/80 p-10 text-center">
             <p className="font-serif text-3xl font-semibold">
               Já sabe a data?

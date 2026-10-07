@@ -41,7 +41,7 @@ export function Drinks() {
         </Reveal>
 
         {/* Mosaico: uma foto alta à esquerda e duas empilhadas à direita. */}
-        <div className="grid h-[28rem] grid-cols-2 gap-4 sm:h-[34rem]">
+        <div className="grid h-80 grid-cols-2 gap-3 sm:h-[34rem] sm:gap-4">
           <Reveal delay={100} className="h-full">
             <img
               src="/fotos/espumante.webp"

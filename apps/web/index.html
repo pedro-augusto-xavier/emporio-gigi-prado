@@ -2,14 +2,63 @@
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Empório Gigi Prado</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Empório Gigi Prado · Restaurante em Mury, Nova Friburgo</title>
     <meta
       name="description"
-      content="Restaurante e empório em meio ao verde. Pratos da casa, sobremesas, encomendas de pães, bolos e tortas. Aberto de quarta a domingo."
+      content="Restaurante e empório numa casa de madeira cercada de jardim em Mury, Nova Friburgo. Massas, peixes, sobremesas, café da tarde e encomendas. Aberto de quarta a domingo. Reserve online."
     />
+    <link rel="canonical" href="https://emporio-gigi-prado.vercel.app/" />
     <meta name="theme-color" content="#3B2A20" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+    <!-- Prévia do link no WhatsApp, Instagram, Facebook etc. -->
+    <meta property="og:type" content="restaurant" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:site_name" content="Empório Gigi Prado" />
+    <meta property="og:title" content="Empório Gigi Prado · Um cantinho no meio do verde" />
+    <meta
+      property="og:description"
+      content="Restaurante e empório em Mury, Nova Friburgo. Massas, peixes e sobremesas da Chef Gigi. Aberto de quarta a domingo."
+    />
+    <meta property="og:url" content="https://emporio-gigi-prado.vercel.app/" />
+    <meta property="og:image" content="https://emporio-gigi-prado.vercel.app/og-image.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Pratos do Empório Gigi Prado: filé mignon com cogumelos e massa com camarões" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Ficha do restaurante para o Google (endereço, horário, telefone). Manter igual a src/config.ts. -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Restaurant",
+        "name": "Empório Gigi Prado",
+        "url": "https://emporio-gigi-prado.vercel.app/",
+        "image": "https://emporio-gigi-prado.vercel.app/og-image.jpg",
+        "telephone": "+55-22-99233-9210",
+        "priceRange": "$$",
+        "servesCuisine": ["Brasileira", "Massas", "Peixes", "Sobremesas", "Café"],
+        "acceptsReservations": "True",
+        "menu": "https://emporio-gigi-prado.vercel.app/cardapio",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "Av. Manoel Carneiro de Menezes, 3471",
+          "addressLocality": "Nova Friburgo",
+          "addressRegion": "RJ",
+          "postalCode": "28615-060",
+          "addressCountry": "BR"
+        },
+        "openingHoursSpecification": [
+          { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Wednesday", "Thursday"], "opens": "11:00", "closes": "18:00" },
+          { "@type": "OpeningHoursSpecification", "dayOfWeek": "Friday", "opens": "11:00", "closes": "19:00" },
+          { "@type": "OpeningHoursSpecification", "dayOfWeek": "Saturday", "opens": "10:00", "closes": "19:00" },
+          { "@type": "OpeningHoursSpecification", "dayOfWeek": "Sunday", "opens": "10:00", "closes": "18:00" }
+        ],
+        "sameAs": ["https://instagram.com/emporiogigiprado"]
+      }
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link

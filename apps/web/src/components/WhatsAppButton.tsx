@@ -9,7 +9,7 @@ export function WhatsAppButton() {
       target="_blank"
       rel="noreferrer"
       aria-label="Conversar no WhatsApp"
-      className="fixed right-5 bottom-5 z-50 rounded-2xl bg-[#25D366] p-3 text-white shadow-xl transition-transform hover:scale-110"
+      className="fixed right-5 bottom-5 z-50 hidden md:block rounded-2xl bg-[#25D366] p-3 text-white shadow-xl transition-transform hover:scale-110"
     >
       <WhatsAppIcon className="h-8 w-8" />
     </a>

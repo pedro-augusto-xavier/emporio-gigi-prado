@@ -48,11 +48,11 @@ export function Specialties() {
           </p>
         </Reveal>
 
-        <div className="mt-12 grid gap-6 md:grid-cols-3">
+        <div className="mt-10 sem-barra -mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-px-4 px-4 pb-2 md:mx-0 md:grid md:snap-none md:overflow-visible md:px-0 md:pb-0 md:grid-cols-3 md:gap-6">
           {specialties.map((item, index) => (
-            <Reveal key={item.title} delay={index * 150}>
+            <Reveal key={item.title} delay={index * 150} className="w-[82%] shrink-0 snap-start md:w-auto">
               <article className="group h-full overflow-hidden rounded-2xl bg-madeira-escura shadow-xl">
-                <div className="h-56 overflow-hidden">
+                <div className="h-48 overflow-hidden md:h-56">
                   <img
                     src={item.image}
                     alt={item.alt}
@@ -76,7 +76,9 @@ export function Specialties() {
           ))}
         </div>
 
-        <Reveal className="mt-12 text-center">
+        <p aria-hidden="true" className="mt-3 text-center text-xs tracking-wide opacity-60 md:hidden">Arraste para o lado →</p>
+
+        <Reveal className="mt-10 text-center md:mt-12">
           <Link
             to="/cardapio"
             className="inline-block rounded-full bg-creme px-8 py-3 font-medium tracking-wide text-madeira uppercase hover:bg-palha"

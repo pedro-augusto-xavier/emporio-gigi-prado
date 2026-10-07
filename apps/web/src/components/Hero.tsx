@@ -29,7 +29,10 @@ export function Hero() {
 
       <div className="relative mx-auto w-full max-w-6xl px-4 pb-20 sm:px-6 sm:pb-28">
         <p className="animate-sobe mb-4 text-sm tracking-[0.3em] text-palha uppercase">
-          {restaurant.openDays} · Mury, Nova Friburgo
+          {restaurant.openDays}
+          <span className="hidden sm:inline"> · </span>
+          <br className="sm:hidden" />
+          Mury, Nova Friburgo
         </p>
         <h1
           className="animate-sobe max-w-2xl font-serif text-5xl leading-[1.05] font-semibold sm:text-7xl"

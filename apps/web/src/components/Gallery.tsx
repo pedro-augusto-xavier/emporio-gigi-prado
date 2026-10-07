@@ -17,10 +17,10 @@ export function Gallery() {
         <Reveal>
           <h2 className="text-center font-serif text-5xl font-semibold">Galeria</h2>
         </Reveal>
-        <div className="mt-10 grid gap-5 sm:grid-cols-2 md:grid-cols-3">
+        <div className="mt-8 sem-barra -mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-px-4 px-4 pb-2 md:mx-0 md:grid md:snap-none md:overflow-visible md:px-0 md:pb-0 md:mt-10 md:grid-cols-3 md:gap-5">
           {photos.map((photo, index) => (
-            <Reveal key={photo.src} delay={(index % 3) * 120}>
-              <figure className="group relative h-64 overflow-hidden rounded-2xl">
+            <Reveal key={photo.src} delay={(index % 3) * 120} className="w-[82%] shrink-0 snap-start md:w-auto">
+              <figure className="group relative h-80 overflow-hidden rounded-2xl md:h-64">
                 <img
                   src={photo.src}
                   alt={photo.alt}
@@ -34,6 +34,7 @@ export function Gallery() {
             </Reveal>
           ))}
         </div>
+        <p aria-hidden="true" className="mt-3 text-center text-xs tracking-wide opacity-60 md:hidden">Arraste para o lado →</p>
       </div>
     </section>
   );

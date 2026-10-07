@@ -19,7 +19,7 @@ function ColumnTitle({ children }: { children: string }) {
 
 export function Footer() {
   return (
-    <footer id="contato" className="scroll-mt-24 bg-madeira-escura text-creme">
+    <footer id="contato" className="scroll-mt-24 bg-madeira-escura pb-20 text-creme md:pb-0">
       <div className="mx-auto grid max-w-6xl gap-10 px-4 py-16 sm:grid-cols-2 sm:px-6 lg:grid-cols-[1.3fr_0.8fr_1fr_1.3fr]">
         <div>
           <Logo className="items-start" />
@@ -76,7 +76,7 @@ export function Footer() {
           </ul>
         </div>
       </div>
-      <p className="border-t border-creme/10 py-5 text-center text-xs text-creme/50">
+      <p className="border-t border-creme/10 px-4 py-5 text-center text-xs leading-relaxed text-creme/50">
         © {new Date().getFullYear()} {restaurant.name}. Algumas fotos ilustrativas: Unsplash. ·{' '}
         <Link to="/privacidade" className="underline hover:text-creme">
           Política de Privacidade

@@ -37,7 +37,7 @@ const features = [
 
 export function Events() {
   return (
-    <section id="eventos" className="mx-auto max-w-6xl scroll-mt-24 px-4 py-20 sm:px-6">
+    <section id="eventos" className="mx-auto max-w-6xl scroll-mt-24 px-4 py-14 sm:px-6 md:py-20">
       <Reveal>
         <h2 className="max-w-md font-serif text-4xl leading-tight font-semibold sm:text-5xl">Comemore no Empório</h2>
         <p className="mt-4 max-w-2xl text-madeira/80">
@@ -46,13 +46,13 @@ export function Events() {
         </p>
       </Reveal>
 
-      <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-8 grid grid-cols-2 gap-3 md:mt-10 md:gap-5 lg:grid-cols-3">
         {features.map((feature, index) => (
           <Reveal key={feature.title} delay={index * 120}>
-            <div className="h-full rounded-2xl bg-white p-6 text-center shadow-md transition-transform duration-300 hover:-translate-y-1">
-              <feature.icon className="mx-auto mb-3 h-10 w-10 text-folha" />
-              <h3 className="font-serif text-2xl font-semibold">{feature.title}</h3>
-              <p className="mt-3 text-sm leading-relaxed text-madeira/80">{feature.text}</p>
+            <div className="h-full rounded-2xl bg-white p-4 text-center shadow-md transition-transform duration-300 hover:-translate-y-1 md:p-6">
+              <feature.icon className="mx-auto mb-2 h-8 w-8 text-folha md:mb-3 md:h-10 md:w-10" />
+              <h3 className="font-serif text-lg leading-tight font-semibold md:text-2xl">{feature.title}</h3>
+              <p className="mt-2 text-xs leading-relaxed text-madeira/80 md:mt-3 md:text-sm">{feature.text}</p>
             </div>
           </Reveal>
         ))}

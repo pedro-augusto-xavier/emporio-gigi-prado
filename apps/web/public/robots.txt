@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+
+Sitemap: https://emporio-gigi-prado.vercel.app/sitemap.xml
