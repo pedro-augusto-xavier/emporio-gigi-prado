@@ -7,10 +7,10 @@ export function PetFriendly() {
       <div className="grid md:grid-cols-2">
         <Reveal className="h-72 md:h-full md:min-h-96">
           <img
-            src="/fotos/pet-mesa.webp"
-            alt="Cachorro deitado embaixo da mesa enquanto os donos almoçam"
+            src="/fotos/pet-feliz.webp"
+            alt="Cachorrinho feliz no colo da dona numa mesa de almoço ao ar livre"
             loading="lazy"
-            className="h-full w-full object-cover"
+            className="h-full w-full object-cover object-[60%_50%]"
           />
         </Reveal>
         <Reveal delay={150} className="flex flex-col justify-center px-6 py-14 sm:px-12 lg:px-20">
