@@ -5,12 +5,12 @@ export function PetFriendly() {
   return (
     <section id="pets" className="scroll-mt-20 bg-folha text-creme">
       <div className="grid md:grid-cols-2">
-        <Reveal className="h-72 md:h-full md:min-h-96">
+        <Reveal className="h-72 sm:h-96 md:h-[28rem] lg:h-[32rem]">
           <img
             src="/fotos/pet-feliz.webp"
             alt="Cachorrinho feliz no colo da dona numa mesa de almoço ao ar livre"
             loading="lazy"
-            className="h-full w-full object-cover object-[60%_50%]"
+            className="h-full w-full object-cover object-[60%_60%]"
           />
         </Reveal>
         <Reveal delay={150} className="flex flex-col justify-center px-6 py-14 sm:px-12 lg:px-20">
