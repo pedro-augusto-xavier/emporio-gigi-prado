@@ -1,13 +1,14 @@
 import { asc, eq } from 'drizzle-orm';
 import type { FastifyPluginAsync } from 'fastify';
 import { z } from 'zod';
-import { menuCategories, menuItems } from '../../db/schema.js';
+import { menuCategories, menuItems, menuSection } from '../../db/schema.js';
 import { audit } from '../../lib/audit.js';
 import { badRequest, conflict, notFound } from '../../lib/errors.js';
 import { uuidParam } from '../../lib/validation.js';
 
 const categoryBody = z.object({
   name: z.string().trim().min(1).max(60),
+  section: z.enum(menuSection.enumValues).default('almoco'),
   position: z.number().int().min(0).default(0),
   active: z.boolean().default(true),
 });
@@ -19,6 +20,7 @@ const itemBody = z.object({
   /** null = "Consulte": aparece no cardápio, mas não entra em pedido online. */
   priceCents: z.number().int().min(0).max(1_000_000).nullable(),
   imageUrl: z.url({ protocol: /^https$/ }).nullable().default(null),
+  position: z.number().int().min(0).default(0),
   available: z.boolean().default(true),
 });
 
@@ -26,7 +28,7 @@ export const menuRoutes: FastifyPluginAsync = async (app) => {
   /** Cardápio público: só categorias ativas e itens disponíveis. */
   app.get('/menu', async () => {
     const categories = await app.db
-      .select({ id: menuCategories.id, name: menuCategories.name })
+      .select({ id: menuCategories.id, name: menuCategories.name, section: menuCategories.section })
       .from(menuCategories)
       .where(eq(menuCategories.active, true))
       .orderBy(asc(menuCategories.position), asc(menuCategories.name));
@@ -42,7 +44,7 @@ export const menuRoutes: FastifyPluginAsync = async (app) => {
       })
       .from(menuItems)
       .where(eq(menuItems.available, true))
-      .orderBy(asc(menuItems.name));
+      .orderBy(asc(menuItems.position), asc(menuItems.name));
 
     return {
       categories: categories
@@ -88,7 +90,7 @@ export const menuRoutes: FastifyPluginAsync = async (app) => {
   });
 
   app.get('/admin/menu/items', adminOrStaff, async () => {
-    return app.db.select().from(menuItems).orderBy(asc(menuItems.name));
+    return app.db.select().from(menuItems).orderBy(asc(menuItems.position), asc(menuItems.name));
   });
 
   async function assertCategoryExists(categoryId: string) {

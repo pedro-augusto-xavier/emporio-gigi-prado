@@ -1,11 +1,22 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { fetchMenu, formatPrice, type MenuCategory, type MenuItem } from '../api';
+import { useSearchParams } from 'react-router';
+import { fetchMenu, formatPrice, type MenuCategory, type MenuItem, type MenuSection } from '../api';
 import { Reveal } from '../components/Reveal';
 import { whatsappLink } from '../config';
 
 type LoadState = { status: 'loading' } | { status: 'error' } | { status: 'ready'; categories: MenuCategory[] };
 
 const CHEF_CATEGORY = 'Sugestões do Chef';
+
+const SECTIONS: { id: MenuSection; label: string; short: string }[] = [
+  { id: 'almoco', label: 'Almoço', short: 'Almoço' },
+  { id: 'cafe', label: 'Café e lanches', short: 'Café' },
+  { id: 'bebidas', label: 'Bebidas', short: 'Bebidas' },
+];
+
+function isSection(value: string | null): value is MenuSection {
+  return SECTIONS.some((section) => section.id === value);
+}
 
 /** "Estrogonofe" acha "estrogonofe", "camaroes" acha "Camarões". */
 function normalize(text: string): string {
@@ -87,6 +98,20 @@ export function MenuPage() {
   const [attempt, setAttempt] = useState(0);
   const [activeId, setActiveId] = useState<string | null>(null);
   const navRef = useRef<HTMLElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
+  // A aba fica no endereço (/cardapio?aba=cafe), então dá para mandar o link direto de uma aba.
+  const [params, setParams] = useSearchParams();
+  const tabParam = params.get('aba');
+  const tab: MenuSection = isSection(tabParam) ? tabParam : 'almoco';
+  const searching = search.trim() !== '';
+
+  function selectTab(section: MenuSection) {
+    setSearch('');
+    setParams(section === 'almoco' ? {} : { aba: section }, { replace: true });
+    // Se já rolou para baixo, volta para o começo da lista.
+    const list = listRef.current;
+    if (list && window.scrollY > list.offsetTop - 200) window.scrollTo({ top: list.offsetTop - 260 });
+  }
 
   useEffect(() => {
     const controller = new AbortController();
@@ -105,11 +130,12 @@ export function MenuPage() {
   const visible = useMemo(() => {
     if (state.status !== 'ready') return [];
     const query = normalize(search.trim());
-    if (!query) return state.categories;
+    // Sem busca: só a aba escolhida. Com busca: procura no cardápio inteiro.
+    if (!query) return state.categories.filter((category) => category.section === tab);
     return state.categories
       .map((category) => ({ ...category, items: category.items.filter((item) => matches(item, query)) }))
       .filter((category) => category.items.length > 0);
-  }, [state, search]);
+  }, [state, search, tab]);
 
   // Acende o botão da categoria que está no meio da tela enquanto a pessoa rola.
   useEffect(() => {
@@ -150,6 +176,31 @@ export function MenuPage() {
 
       {/* Barra de busca e categorias: gruda no topo enquanto a pessoa rola. */}
       <div className="sticky top-21 z-30 border-b border-madeira/10 bg-creme/95 shadow-sm backdrop-blur sm:top-23">
+        <div
+          role="tablist"
+          aria-label="Partes do cardápio"
+          className="mx-auto grid max-w-6xl grid-cols-3 gap-1 px-4 pt-3 sm:flex sm:gap-2 sm:px-6"
+        >
+          {SECTIONS.map((section) => {
+            const selected = !searching && tab === section.id;
+            return (
+              <button
+                key={section.id}
+                type="button"
+                role="tab"
+                aria-selected={selected}
+                aria-label={section.label}
+                onClick={() => selectTab(section.id)}
+                className={`rounded-lg px-3 py-2 text-sm font-semibold transition-colors sm:px-6 sm:text-base ${
+                  selected ? 'bg-madeira text-creme shadow' : 'text-madeira/70 hover:bg-madeira/10'
+                }`}
+              >
+                <span className="sm:hidden">{section.short}</span>
+                <span className="hidden sm:inline">{section.label}</span>
+              </button>
+            );
+          })}
+        </div>
         <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-3 sm:px-6 md:flex-row-reverse md:items-start">
           <label className="relative shrink-0 md:w-64">
             <span className="sr-only">Buscar prato</span>
@@ -195,7 +246,10 @@ export function MenuPage() {
         </div>
       </div>
 
-      <div className="mx-auto max-w-6xl space-y-8 px-4 py-12 sm:px-6">
+      <div ref={listRef} className="mx-auto max-w-6xl space-y-8 px-4 py-12 sm:px-6">
+        {searching && state.status === 'ready' && visible.length > 0 && (
+          <p className="text-center text-sm text-madeira/60">Buscando em todo o cardápio (almoço, café e bebidas).</p>
+        )}
         {state.status === 'loading' && (
           <div aria-label="Carregando cardápio" className="space-y-4 rounded-2xl bg-white p-8 shadow-md">
             {Array.from({ length: 6 }, (_, i) => (

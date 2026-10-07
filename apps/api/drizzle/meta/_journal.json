@@ -29,6 +29,13 @@
       "when": 1791238363837,
       "tag": "0003_reservation_capacity",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1791343002368,
+      "tag": "0004_menu_sections",
+      "breakpoints": true
     }
   ]
 }

@@ -53,8 +53,8 @@ describe('cardápio', () => {
     expect(menu.statusCode).toBe(200);
     expect(menu.json()).toEqual({
       categories: [
-        { id: dishes.id, name: 'Pratos', items: [expect.objectContaining({ name: 'Feijoada', priceCents: 4990 })] },
-        { id: drinks.id, name: 'Bebidas', items: [expect.objectContaining({ name: 'Água' })] },
+        { id: dishes.id, name: 'Pratos', section: 'almoco', items: [expect.objectContaining({ name: 'Feijoada', priceCents: 4990 })] },
+        { id: drinks.id, name: 'Bebidas', section: 'almoco', items: [expect.objectContaining({ name: 'Água' })] },
       ],
     });
   });

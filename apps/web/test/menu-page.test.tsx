@@ -8,6 +8,7 @@ const menu: MenuCategory[] = [
   {
     id: 'c1',
     name: 'Sugestões do Chef',
+    section: 'almoco',
     items: [
       { id: 'i1', categoryId: 'c1', name: 'Truta com molho de pinhão', description: null, priceCents: 8200, imageUrl: null },
     ],
@@ -15,6 +16,7 @@ const menu: MenuCategory[] = [
   {
     id: 'c2',
     name: 'Massas Empório',
+    section: 'almoco',
     items: [
       { id: 'i2', categoryId: 'c2', name: 'Massa Empório com Camarões', description: null, priceCents: 7300, imageUrl: null },
       { id: 'i3', categoryId: 'c2', name: 'Massa Empório com Cogumelos', description: null, priceCents: 6000, imageUrl: null },
@@ -23,6 +25,7 @@ const menu: MenuCategory[] = [
   {
     id: 'c3',
     name: 'Bebidas',
+    section: 'bebidas',
     items: [{ id: 'i4', categoryId: 'c3', name: 'Vinhos', description: null, priceCents: null, imageUrl: null }],
   },
 ];
@@ -35,9 +38,9 @@ function mockApi(response: { ok: boolean; body?: unknown }) {
   } as Response);
 }
 
-function renderMenu() {
+function renderMenu(url = '/cardapio') {
   return render(
-    <MemoryRouter initialEntries={['/cardapio']}>
+    <MemoryRouter initialEntries={[url]}>
       <App />
     </MemoryRouter>,
   );
@@ -65,8 +68,36 @@ describe('página do cardápio', () => {
     expect(fetchSpy).toHaveBeenCalledWith('/api/menu', expect.anything());
     expect(screen.getByRole('heading', { name: 'Sugestões do Chef' })).toBeTruthy();
     expect(screen.getByText(/R\$\s73,00/)).toBeTruthy();
-    expect(screen.getByText('Consulte')).toBeTruthy();
     expect(screen.getByRole('link', { name: 'Massas Empório' }).getAttribute('href')).toBe('#cat-c2');
+  });
+
+  it('abre na aba Almoço e troca de aba sem recarregar', async () => {
+    mockApi({ ok: true, body: { categories: menu } });
+    renderMenu();
+    await screen.findByText('Massa Empório com Camarões');
+    expect(screen.getByRole('tab', { name: 'Almoço' }).getAttribute('aria-selected')).toBe('true');
+    expect(screen.queryByText('Vinhos')).toBeNull();
+
+    fireEvent.click(screen.getByRole('tab', { name: 'Bebidas' }));
+    expect(screen.getByText('Vinhos')).toBeTruthy();
+    expect(screen.getByText('Consulte')).toBeTruthy();
+    expect(screen.queryByText('Massa Empório com Camarões')).toBeNull();
+  });
+
+  it('o link /cardapio?aba=bebidas já abre na aba certa', async () => {
+    mockApi({ ok: true, body: { categories: menu } });
+    renderMenu('/cardapio?aba=bebidas');
+    expect(await screen.findByText('Vinhos')).toBeTruthy();
+    expect(screen.getByRole('tab', { name: 'Bebidas' }).getAttribute('aria-selected')).toBe('true');
+  });
+
+  it('a busca procura em todas as abas', async () => {
+    mockApi({ ok: true, body: { categories: menu } });
+    renderMenu();
+    await screen.findByText('Massa Empório com Camarões');
+    fireEvent.change(screen.getByPlaceholderText('Buscar prato...'), { target: { value: 'vinho' } });
+    expect(screen.getByText('Vinhos')).toBeTruthy();
+    expect(screen.getByText(/Buscando em todo o cardápio/)).toBeTruthy();
   });
 
   it('busca ignora acentos e maiúsculas, e avisa quando não encontra', async () => {

@@ -30,8 +30,9 @@ então a reserva se confirma sozinha e chega no WhatsApp dela.
 
 - **Reserva online:** o cliente escolhe dia e número de pessoas, vê só os horários com lugar e recebe um código na
   hora. Grupos com mais de 8 pessoas são encaminhados para o WhatsApp.
-- **Cardápio vindo da API:** 39 pratos em 10 categorias, busca que ignora acentos, preço em reais ou "Consulte" e
-  barra de categorias que acompanha a rolagem.
+- **Cardápio em três abas (Almoço, Café e lanches, Bebidas):** 64 itens na ordem do cardápio impresso, busca em
+  todas as abas ignorando acentos, preço em reais ou "Consulte" e barra de categorias que acompanha a rolagem.
+  Cada aba tem link próprio (`/cardapio?aba=cafe`).
 - **Página inicial:** especialidades da chef, bebidas, eventos e música ao vivo, galeria, avaliações reais do
   Tripadvisor, perguntas frequentes e mapa.
 - **LGPD:** consentimento explícito, política de privacidade e, na API, exportação e exclusão (anonimização) dos
@@ -85,12 +86,15 @@ então não há problema de CORS e o cookie de sessão pode ser `SameSite=Strict
 - **Segurança:** senhas com scrypt; access token curto e refresh token rotativo em cookie `httpOnly`, com
   **detecção de reuso** (um token roubado derruba todas as sessões); limite de tentativas no login; cabeçalhos de
   segurança e validação de toda entrada com Zod.
+- **Cardápio como código.** O cardápio fica em [apps/api/src/menu/cardapio.ts](apps/api/src/menu/cardapio.ts).
+  Ao subir, a API compara um hash do arquivo com o que está no banco e, se mudou, atualiza tudo numa transação.
+  Mudar um preço é editar uma linha e dar push.
 - **Regras no servidor:** o preço de um pedido sempre vem do banco, nunca do navegador, e os horários são
   calculados no fuso do restaurante, não no do celular do cliente.
 - **LGPD de verdade:** o consentimento é gravado com a versão da política, há trilha de auditoria e a exclusão
   anonimiza os dados mantendo o histórico. Os detalhes estão em [docs/LGPD.md](docs/LGPD.md).
 
-**84 testes automatizados** (61 na API e 23 no site) rodam a cada push no GitHub Actions, junto com a checagem de
+**91 testes automatizados** (65 na API e 26 no site) rodam a cada push no GitHub Actions, junto com a checagem de
 tipos, o build e a construção da imagem Docker.
 
 ## Estrutura
@@ -116,7 +120,7 @@ Só precisa do **Node 22+**. Em desenvolvimento a API usa um PostgreSQL embutido
 npm install
 cp .env.example .env          # já vem pronto para desenvolvimento
 npm run db:seed -w apps/api   # cria o cardápio e um usuário admin
-npm test                      # roda os 84 testes
+npm test                      # roda os 91 testes
 ```
 
 Depois, em dois terminais:
@@ -152,7 +156,6 @@ Regras de horário e lotação: [apps/api/src/config/restaurant.ts](apps/api/src
 ## Próximos passos
 
 - [ ] Reserva chegar automaticamente no celular da dona, sem depender do cliente apertar o botão
-- [ ] Trocar as fotos ilustrativas pelas fotos reais da casa
 - [ ] Perfil no Google e domínio próprio
 - [ ] Delivery: a API de pedidos já está pronta e testada, mas o restaurante decidiu não oferecer por enquanto
 

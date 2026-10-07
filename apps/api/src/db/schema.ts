@@ -94,13 +94,25 @@ export const auditLogs = pgTable(
   (t) => [index('audit_logs_entity_idx').on(t.entity, t.entityId)],
 );
 
+/** Configurações simples guardadas no banco (ex.: versão do cardápio já aplicada). */
+export const settings = pgTable('settings', {
+  key: text('key').primaryKey(),
+  value: text('value').notNull(),
+  updatedAt: updatedAt(),
+});
+
 // ---------------------------------------------------------------------------
 // Cardápio
 // ---------------------------------------------------------------------------
 
+/** Abas do cardápio no site. */
+export const menuSection = pgEnum('menu_section', ['almoco', 'cafe', 'bebidas']);
+export type MenuSection = (typeof menuSection.enumValues)[number];
+
 export const menuCategories = pgTable('menu_categories', {
   id: uuid('id').primaryKey().defaultRandom(),
   name: text('name').notNull(),
+  section: menuSection('section').notNull().default('almoco'),
   position: integer('position').notNull().default(0),
   active: boolean('active').notNull().default(true),
   createdAt: createdAt(),
@@ -122,6 +134,8 @@ export const menuItems = pgTable(
      */
     priceCents: integer('price_cents'),
     imageUrl: text('image_url'),
+    /** Ordem dentro da categoria (a mesma do cardápio impresso). */
+    position: integer('position').notNull().default(0),
     available: boolean('available').notNull().default(true),
     createdAt: createdAt(),
     updatedAt: updatedAt(),

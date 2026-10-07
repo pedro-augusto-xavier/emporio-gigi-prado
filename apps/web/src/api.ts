@@ -10,9 +10,13 @@ export interface MenuItem {
   imageUrl: string | null;
 }
 
+/** Aba do cardápio em que a categoria aparece. */
+export type MenuSection = 'almoco' | 'cafe' | 'bebidas';
+
 export interface MenuCategory {
   id: string;
   name: string;
+  section: MenuSection;
   items: MenuItem[];
 }
 
