@@ -1,75 +1,136 @@
-# Restaurante Gigi
+<div align="center">
 
-Sistema do restaurante: cardápio, reservas online, pedidos para entrega/retirada e painel administrativo.
+# 🌿 Empório Gigi Prado
+
+**Site e sistema de reservas de um restaurante de verdade, em Nova Friburgo (RJ)**
+
+[![CI](https://github.com/pedro-augusto-xavier/TRABALHO-RESTAURANTE-GIGI-/actions/workflows/ci.yml/badge.svg)](https://github.com/pedro-augusto-xavier/TRABALHO-RESTAURANTE-GIGI-/actions/workflows/ci.yml)
+![Licença MIT](https://img.shields.io/badge/licen%C3%A7a-MIT-4F6B3A)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)
+![React](https://img.shields.io/badge/React-20232A?logo=react&logoColor=61DAFB)
+![Fastify](https://img.shields.io/badge/Fastify-000000?logo=fastify&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?logo=postgresql&logoColor=white)
+
+### [🔗 emporio-gigi-prado.vercel.app](https://emporio-gigi-prado.vercel.app)
+
+![Página inicial do Empório Gigi Prado](docs/screenshots/inicio.webp)
+
+</div>
+
+## Sobre
+
+O Empório Gigi Prado é um restaurante e empório numa casa de madeira cercada de jardim, em Mury, Nova Friburgo,
+com nota 5,0 no Tripadvisor. Fiz este sistema para ele: um site para os clientes conhecerem a casa, verem o
+cardápio e **reservarem mesa online com confirmação na hora**, e uma API com as regras do negócio por trás.
+
+O projeto foi pensado para a rotina real da casa. A dona cozinha e não tem tempo de ficar olhando um painel,
+então a reserva se confirma sozinha e chega no WhatsApp dela.
+
+## Funcionalidades
+
+- **Reserva online:** o cliente escolhe dia e número de pessoas, vê só os horários com lugar e recebe um código na
+  hora. Grupos com mais de 8 pessoas são encaminhados para o WhatsApp.
+- **Cardápio vindo da API:** 39 pratos em 10 categorias, busca que ignora acentos, preço em reais ou "Consulte" e
+  barra de categorias que acompanha a rolagem.
+- **Página inicial:** especialidades da chef, bebidas, eventos e música ao vivo, galeria, avaliações reais do
+  Tripadvisor, perguntas frequentes e mapa.
+- **LGPD:** consentimento explícito, política de privacidade e, na API, exportação e exclusão (anonimização) dos
+  dados do titular.
+- **Responsivo e acessível:** funciona do celular ao desktop, todas as imagens têm descrição e as animações
+  respeitam a opção de "reduzir movimento" do sistema.
+
+## Telas
+
+| Cardápio | Reserva |
+|---|---|
+| ![Cardápio com categorias e preços](docs/screenshots/cardapio.webp) | ![Formulário de reserva com horários livres](docs/screenshots/reserva.webp) |
+| **Especialidades** | **Avaliações** |
+| ![Especialidades: massas, peixes e sobremesas](docs/screenshots/especialidades.webp) | ![Carrossel de avaliações do Tripadvisor](docs/screenshots/avaliacoes.webp) |
+
+<p align="center"><img src="docs/screenshots/celular.webp" alt="Site no celular" width="260"></p>
+
+## Tecnologias
+
+| Parte | Ferramentas |
+|---|---|
+| **Site** | React 19, TypeScript, Vite, Tailwind CSS 4, React Router |
+| **API** | Node.js, Fastify 5, TypeScript, Zod |
+| **Banco** | PostgreSQL com Drizzle ORM e migrações versionadas |
+| **Testes** | Vitest, Testing Library e PGlite (Postgres real rodando em memória) |
+| **Infra** | Docker, GitHub Actions, Vercel (site), Render (API) e Neon (banco) |
+
+## Arquitetura
+
+```mermaid
+flowchart LR
+    U([Cliente]) --> V["Vercel<br/>site React"]
+    V -- "/api/* (rewrite)" --> R["Render<br/>API Fastify em Docker"]
+    R --> N[("Neon<br/>PostgreSQL")]
+    U -. "aviso da reserva" .-> W([WhatsApp do restaurante])
+```
+
+O site repassa `/api/*` para a API pela própria Vercel. Para o navegador, site e API ficam no mesmo endereço,
+então não há problema de CORS e o cookie de sessão pode ser `SameSite=Strict`.
+
+## Destaques técnicos
+
+- **Reserva por lotação, não por mesa.** As mesas da casa se juntam conforme o grupo, então a regra é "no máximo
+  30 pessoas ao mesmo tempo". O cálculo considera o **pico de ocupação** durante toda a reserva, e não só o horário
+  de chegada.
+- **Sem reserva duplicada.** Um *advisory lock* do Postgres por dia impede que dois clientes peguem o último lugar
+  ao mesmo tempo. Há um teste que dispara 5 reservas simultâneas e confere que só as que cabem passam.
+- **Testes com banco de verdade, sem Docker.** Os testes de integração sobem um PostgreSQL em memória (PGlite) com
+  as mesmas migrações de produção. Em desenvolvimento, a API também roda com esse banco embutido, então não é
+  preciso instalar nada além do Node.
+- **Segurança:** senhas com scrypt; access token curto e refresh token rotativo em cookie `httpOnly`, com
+  **detecção de reuso** (um token roubado derruba todas as sessões); limite de tentativas no login; cabeçalhos de
+  segurança e validação de toda entrada com Zod.
+- **Regras no servidor:** o preço de um pedido sempre vem do banco, nunca do navegador, e os horários são
+  calculados no fuso do restaurante, não no do celular do cliente.
+- **LGPD de verdade:** o consentimento é gravado com a versão da política, há trilha de auditoria e a exclusão
+  anonimiza os dados mantendo o histórico. Os detalhes estão em [docs/LGPD.md](docs/LGPD.md).
+
+**84 testes automatizados** (61 na API e 23 no site) rodam a cada push no GitHub Actions, junto com a checagem de
+tipos, o build e a construção da imagem Docker.
 
 ## Estrutura
 
-```
+```text
 apps/
-  api/          Back-end: Node + TypeScript + Fastify + PostgreSQL (Drizzle ORM)
-    src/
-      modules/  auth, me (LGPD), menu, tables, reservations, orders
-      db/       schema, migrações, seed
-    drizzle/    migrações SQL geradas
-    test/       testes (Vitest + PGlite, sem precisar de Docker)
-  web/          Site: React + Vite + Tailwind (páginas em src/pages, seções em src/components)
-docs/LGPD.md    como o sistema trata dados pessoais
-docs/DEPLOY.md  como publicar (Neon + Render + Vercel)
+  api/            API Fastify
+    src/modules/  auth, me (LGPD), menu, reservations, orders, tables
+    src/db/       schema, migrações, seed
+    drizzle/      migrações SQL geradas
+    test/         testes de integração (PGlite) e de regras
+  web/            site React
+    src/pages/    páginas (início, cardápio, privacidade)
+    src/components/ seções da página inicial
+docs/             LGPD, deploy, identidade visual e prints
 ```
-
-## Roadmap
-
-- [x] **Fase 1:** base da API, autenticação, segurança, LGPD, cardápio, mesas e reservas
-- [x] **Fase 2:** pedidos para entrega e retirada, taxa definida ao confirmar, pagamento na entrega
-- [ ] **Fase 3:** front-end: página inicial ✅ · cardápio ✅ · reservas · pedidos · painel da Gigi
-- [ ] **Fase 4:** deploy no Neon + Render + Vercel (preparado, veja [docs/DEPLOY.md](docs/DEPLOY.md))
-- [ ] Taxa automática por distância (aguardando definição)
-- [ ] Pagamento online (aguardando definição)
 
 ## Rodando no seu computador
 
-Só precisa do **Node 22+**. Não precisa instalar banco de dados nem Docker: em desenvolvimento a API usa
-um Postgres embutido, salvo na pasta `apps/api/.data`.
+Só precisa do **Node 22+**. Em desenvolvimento a API usa um PostgreSQL embutido, salvo em `apps/api/.data`.
 
 ```bash
 npm install
 cp .env.example .env          # já vem pronto para desenvolvimento
-npm run db:seed -w apps/api   # cria admin, mesas e o cardápio do Empório
-npm test                      # roda todos os testes
+npm run db:seed -w apps/api   # cria o cardápio e um usuário admin
+npm test                      # roda os 84 testes
 ```
 
-Depois, abra **dois terminais** (o site precisa da API para mostrar o cardápio):
+Depois, em dois terminais:
 
 ```bash
-npm run dev:api               # terminal 1: API em http://localhost:3333
-npm run dev:web               # terminal 2: site em http://localhost:5173
+npm run dev:api               # API em http://localhost:3333
+npm run dev:web               # site em http://localhost:5173
 ```
 
-Quer zerar o banco de desenvolvimento? **Pare a API** (Ctrl+C), apague a pasta `apps/api/.data` e rode o
-seed de novo. O banco embutido só pode ser aberto por um programa de cada vez.
+Para zerar o banco de desenvolvimento, **pare a API**, apague `apps/api/.data` e rode o seed de novo.
+O passo a passo de publicação está em [docs/DEPLOY.md](docs/DEPLOY.md).
 
-Mudou o `schema.ts`? Gere a migração com `npm run db:generate -w apps/api`.
-
-### Com Docker (para produção)
-
-O Docker empacota a API junto com um PostgreSQL de verdade, do mesmo jeito que vai rodar no servidor.
-Só é necessário na hora do deploy.
-
-```bash
-docker compose up -d --build  # Postgres + API em http://localhost:3333
-```
-
-## Como funciona um pedido
-
-1. O cliente monta o pedido (entrega ou retirada) e escolhe como vai pagar na entrega: dinheiro (com troco), cartão ou Pix.
-2. O pedido chega como **pendente** no painel. Se for entrega, quem atende **define a taxa** ao confirmar.
-3. O cliente acompanha pelo código e vê o total atualizado. Só consegue cancelar enquanto está pendente.
-4. Status: pendente → confirmado → em preparo → pronto → saiu para entrega (anota o motoboy) → concluído.
-   Dá para pular etapas; para cancelar é preciso um motivo, que o cliente vê.
-
-Pedidos só são aceitos dentro do horário de funcionamento.
-
-## API (resumo)
+<details>
+<summary><strong>Rotas da API</strong></summary>
 
 | Método | Rota | Quem |
 |---|---|---|
@@ -80,11 +141,24 @@ Pedidos só são aceitos dentro do horário de funcionamento.
 | POST | `/api/reservations` | público (com ou sem conta) |
 | GET / POST | `/api/reservations/:code?phone=` · `/api/reservations/:code/cancel` | público (código + telefone) |
 | GET | `/api/me/reservations` | logado |
-| POST | `/api/orders` | público (com ou sem conta) |
-| GET / POST | `/api/orders/:code?phone=` · `/api/orders/:code/cancel` | público (código + telefone) |
-| GET | `/api/me/orders` | logado |
 | * | `/api/admin/menu/*` · `/api/admin/tables` | admin (atendente: só disponibilidade) |
 | GET / PATCH | `/api/admin/reservations?date=` · `/:id/status` | admin, atendente |
-| GET / PATCH | `/api/admin/orders` (em aberto) · `?date=` · `/:id` · `/:id/status` | admin, atendente |
+| * | `/api/orders` · `/api/admin/orders` | pronto na API, desativado no site |
 
-Horários de funcionamento e regras de reserva: [apps/api/src/config/restaurant.ts](apps/api/src/config/restaurant.ts).
+Regras de horário e lotação: [apps/api/src/config/restaurant.ts](apps/api/src/config/restaurant.ts).
+
+</details>
+
+## Próximos passos
+
+- [ ] Reserva chegar automaticamente no celular da dona, sem depender do cliente apertar o botão
+- [ ] Trocar as fotos ilustrativas pelas fotos reais da casa
+- [ ] Perfil no Google e domínio próprio
+- [ ] Delivery: a API de pedidos já está pronta e testada, mas o restaurante decidiu não oferecer por enquanto
+
+## Créditos
+
+Desenvolvido por **Pedro Augusto Xavier Machado** ([GitHub](https://github.com/pedro-augusto-xavier)).
+
+Código sob a [licença MIT](LICENSE). As fotos ilustrativas de pratos e bebidas são do [Unsplash](https://unsplash.com).
+As fotos, o cardápio e a marca do Empório Gigi Prado pertencem ao restaurante.

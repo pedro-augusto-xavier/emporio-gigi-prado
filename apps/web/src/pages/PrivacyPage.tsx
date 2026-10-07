@@ -34,10 +34,6 @@ export function PrivacyPage() {
             observações.
           </li>
           <li>
-            <strong>Nos pedidos</strong> (quando estiverem disponíveis no site): nome, telefone, endereço de entrega e os
-            itens pedidos.
-          </li>
-          <li>
             <strong>Se você criar uma conta:</strong> nome, e-mail, telefone e senha. A senha é guardada de forma
             embaralhada e nem nós conseguimos vê-la.
           </li>
@@ -47,7 +43,7 @@ export function PrivacyPage() {
 
       <Section title="Para que usamos">
         <p>
-          Só para organizar sua reserva ou seu pedido e falar com você sobre eles (por exemplo, se precisarmos mudar
+          Só para organizar sua reserva e falar com você sobre ela (por exemplo, se precisarmos mudar
           algo). Promoções, só se você autorizar, e você pode desistir a qualquer momento.
         </p>
         <p>Não vendemos nem compartilhamos seus dados com outras empresas para fins de propaganda.</p>
@@ -56,7 +52,7 @@ export function PrivacyPage() {
       <Section title="Por quanto tempo guardamos">
         <p>
           Pelo tempo necessário para atender você. Se você pedir a exclusão, apagamos seus dados pessoais e mantemos só o
-          registro anônimo da reserva ou do pedido (por exemplo, "4 pessoas no dia 10"), que serve para a organização do
+          registro anônimo da reserva (por exemplo, "4 pessoas no dia 10"), que serve para a organização do
           restaurante.
         </p>
       </Section>
