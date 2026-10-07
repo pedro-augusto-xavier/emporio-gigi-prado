@@ -48,9 +48,9 @@ const inputClass =
  * do jeito dele (o iPhone ignora largura e altura), então tiramos a aparência nativa.
  */
 /** Lista mantém a aparência nativa para não perder a setinha. */
-const selectClass = `${inputClass} h-12 px-2.5 py-0 text-[15px] sm:px-4 sm:text-base`;
+const selectClass = `${inputClass} h-12 py-0`;
 
-const fieldClass = `${inputClass} h-12 appearance-none py-0 [&[type=date]]:px-3 sm:[&[type=date]]:px-4 [&::-webkit-date-and-time-value]:text-left [&::-webkit-date-and-time-value]:leading-[3rem]`;
+const fieldClass = `${inputClass} h-12 appearance-none py-0 [&::-webkit-date-and-time-value]:text-left [&::-webkit-date-and-time-value]:leading-[3rem]`;
 
 const TOO_BIG = String(onlineMaxParty + 1);
 
@@ -182,7 +182,7 @@ export function ReservationForm() {
               </div>
             ) : (
               <form onSubmit={handleSubmit} aria-label="Reserva de mesa" noValidate>
-                <div className="grid grid-cols-[1.25fr_1fr] gap-3 sm:grid-cols-2 sm:gap-4">
+                <div className="grid gap-4 sm:grid-cols-2">
                   <label>
                     <span className="text-sm font-medium">Dia *</span>
                     <input
@@ -197,10 +197,7 @@ export function ReservationForm() {
                     />
                   </label>
                   <label>
-                    <span className="text-sm font-medium">
-                        <span className="sm:hidden">Pessoas *</span>
-                        <span className="hidden sm:inline">Quantas pessoas? *</span>
-                      </span>
+                    <span className="text-sm font-medium">Quantas pessoas? *</span>
                     <select
                       name="people"
                       value={people}
