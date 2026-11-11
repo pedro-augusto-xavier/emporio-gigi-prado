@@ -46,6 +46,10 @@ export function PrivacyPage() {
           Só para organizar sua reserva e falar com você sobre ela (por exemplo, se precisarmos mudar
           algo). Promoções, só se você autorizar, e você pode desistir a qualquer momento.
         </p>
+        <p>
+          Quando você reserva, nome, telefone e detalhes da reserva são enviados ao WhatsApp do restaurante por um
+          serviço de mensagens (CallMeBot), só para avisar a equipe da sua reserva.
+        </p>
         <p>Não vendemos nem compartilhamos seus dados com outras empresas para fins de propaganda.</p>
       </Section>
 

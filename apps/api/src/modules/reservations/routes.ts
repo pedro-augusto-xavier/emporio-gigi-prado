@@ -1,6 +1,7 @@
 import { and, asc, desc, eq, gt, gte, inArray, lt, sql } from 'drizzle-orm';
 import type { FastifyPluginAsync } from 'fastify';
 import { z } from 'zod';
+import type { RestaurantConfig } from '../../config/restaurant.js';
 import type { Db } from '../../db/client.js';
 import { diningTables, reservations, reservationStatus } from '../../db/schema.js';
 import { audit } from '../../lib/audit.js';
@@ -15,6 +16,7 @@ import {
   localDateOf,
   localToUtc,
   hasRoom,
+  offsetMinutes,
   reservationEnd,
   type BookedInterval,
 } from './availability.js';
@@ -47,6 +49,29 @@ function toPublicReservation(r: ReservationRow) {
     status: r.status,
     notes: r.notes,
   };
+}
+
+/** Texto do aviso que chega no WhatsApp da dona, ex: "Quando: qui., 08/10, 20:00". */
+function newReservationMessage(r: ReservationRow, config: RestaurantConfig): string {
+  const local = new Date(r.startsAt.getTime() + offsetMinutes(config.utcOffset) * 60_000);
+  const when = new Intl.DateTimeFormat('pt-BR', {
+    timeZone: 'UTC',
+    weekday: 'short',
+    day: '2-digit',
+    month: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+  }).format(local);
+  return [
+    '🌿 Nova reserva pelo site',
+    `Nome: ${r.name}`,
+    `Pessoas: ${r.partySize}`,
+    `Quando: ${when}`,
+    // Link que abre a conversa com o cliente num toque (o telefone fica salvo só com DDD + número).
+    `WhatsApp do cliente: https://wa.me/55${r.phone}`,
+    ...(r.notes ? [`Obs: ${r.notes}`] : []),
+    `Código: ${r.code}`,
+  ].join('\n');
 }
 
 /** Reservas que ocupam lugar em algum momento entre `from` e `to`. */
@@ -143,6 +168,11 @@ export const reservationRoutes: FastifyPluginAsync = async (app) => {
         })
         .returning();
       return created!;
+    });
+
+    // Sem await: o cliente não espera o WhatsApp, e se o aviso falhar a reserva continua valendo.
+    app.notify(newReservationMessage(reservation, config)).catch((error) => {
+      request.log.error({ err: error }, 'Falha ao avisar a reserva no WhatsApp');
     });
 
     return reply.status(201).send(toPublicReservation(reservation));

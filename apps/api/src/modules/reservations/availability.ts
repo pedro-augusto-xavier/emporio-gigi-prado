@@ -4,7 +4,7 @@ import type { RestaurantConfig } from '../../config/restaurant.js';
 
 const MINUTE = 60_000;
 
-function offsetMinutes(utcOffset: string): number {
+export function offsetMinutes(utcOffset: string): number {
   const match = /^([+-])(\d{2}):(\d{2})$/.exec(utcOffset);
   if (!match) throw new Error(`utcOffset inválido: ${utcOffset}`);
   const minutes = Number(match[2]) * 60 + Number(match[3]);

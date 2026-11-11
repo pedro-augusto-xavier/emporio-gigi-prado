@@ -20,6 +20,9 @@ const envSchema = z.object({
     .enum(['true', 'false'])
     .default('false')
     .transform((value) => value === 'true'),
+  // Aviso de reserva nova no WhatsApp da dona (CallMeBot). Sem os dois, o aviso fica desligado.
+  CALLMEBOT_PHONE: z.string().optional(),
+  CALLMEBOT_APIKEY: z.string().optional(),
 }).superRefine((env, ctx) => {
   if (env.NODE_ENV !== 'production') return;
   if (env.DATABASE_URL.startsWith('pglite:')) {

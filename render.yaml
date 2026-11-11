@@ -23,3 +23,7 @@ services:
         sync: false
       - key: CORS_ORIGIN
         sync: false
+      - key: CALLMEBOT_PHONE
+        sync: false
+      - key: CALLMEBOT_APIKEY
+        sync: false

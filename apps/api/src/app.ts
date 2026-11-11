@@ -10,6 +10,7 @@ import { defaultRestaurantConfig, type RestaurantConfig } from './config/restaur
 import type { Db } from './db/client.js';
 import type { Env } from './env.js';
 import { AppError } from './lib/errors.js';
+import { createWhatsAppNotifier, type Notifier } from './lib/notify.js';
 import { authRoutes } from './modules/auth/routes.js';
 import { meRoutes } from './modules/me/routes.js';
 import { menuRoutes } from './modules/menu/routes.js';
@@ -26,6 +27,8 @@ export interface AppDeps {
   now?: () => Date;
   /** Limite de requisições por IP. Só os testes desligam. */
   rateLimit?: boolean;
+  /** Aviso para o celular da dona. Padrão: WhatsApp pelo CallMeBot. */
+  notify?: Notifier;
 }
 
 declare module 'fastify' {
@@ -34,6 +37,7 @@ declare module 'fastify' {
     env: Env;
     restaurant: RestaurantConfig;
     now: () => Date;
+    notify: Notifier;
   }
 }
 
@@ -56,6 +60,7 @@ export async function buildApp(deps: AppDeps): Promise<FastifyInstance> {
   app.decorate('env', env);
   app.decorate('restaurant', deps.restaurant ?? defaultRestaurantConfig);
   app.decorate('now', deps.now ?? (() => new Date()));
+  app.decorate('notify', deps.notify ?? createWhatsAppNotifier(env));
 
   await app.register(helmet);
   await app.register(cors, { origin: env.CORS_ORIGIN, credentials: true });

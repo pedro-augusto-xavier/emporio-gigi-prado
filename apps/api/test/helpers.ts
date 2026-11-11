@@ -11,6 +11,7 @@ import * as schema from '../src/db/schema.js';
 import { loadEnv } from '../src/env.js';
 import { testRestaurantConfig } from './fixtures.js';
 import { hashPassword } from '../src/lib/password.js';
+import type { Notifier } from '../src/lib/notify.js';
 
 export const testEnv = loadEnv({
   NODE_ENV: 'test',
@@ -26,7 +27,9 @@ export interface TestContext {
 }
 
 /** Sobe a API com um Postgres de verdade rodando em memória (PGlite), já com as migrações. */
-export async function createTestApp(options: { now?: Date; restaurant?: RestaurantConfig; rateLimit?: boolean } = {}): Promise<TestContext> {
+export async function createTestApp(
+  options: { now?: Date; restaurant?: RestaurantConfig; rateLimit?: boolean; notify?: Notifier } = {},
+): Promise<TestContext> {
   const client = new PGlite();
   const db: Db = drizzle(client, { schema });
   await migrate(drizzle(client), { migrationsFolder });
@@ -38,6 +41,7 @@ export async function createTestApp(options: { now?: Date; restaurant?: Restaura
     restaurant: options.restaurant ?? testRestaurantConfig,
     now: () => clock.now,
     rateLimit: options.rateLimit ?? false,
+    notify: options.notify,
   });
   await app.ready();
 
