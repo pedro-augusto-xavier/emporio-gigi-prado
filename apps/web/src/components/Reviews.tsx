@@ -110,8 +110,8 @@ export function Reviews() {
                   {review.name.charAt(0)}
                 </span>
                 <h3 className="font-semibold">{review.name}</h3>
-                <p className="text-sm text-madeira/60">{review.date}</p>
-                <p className="mt-2 flex justify-center gap-0.5 text-[#F5B400]" aria-label={`${review.rating} de 5 estrelas`}>
+                <p className="text-sm text-madeira/70">{review.date}</p>
+                <p role="img" className="mt-2 flex justify-center gap-0.5 text-[#F5B400]" aria-label={`${review.rating} de 5 estrelas`}>
                   {Array.from({ length: 5 }, (_, star) => (
                     <StarIcon key={star} className={`h-5 w-5 ${star < review.rating ? '' : 'opacity-25'}`} />
                   ))}

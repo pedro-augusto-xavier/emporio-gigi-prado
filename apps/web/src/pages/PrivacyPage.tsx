@@ -20,7 +20,7 @@ export function PrivacyPage() {
     <div className="mx-auto max-w-3xl px-4 pt-36 pb-20 sm:px-6">
       <p className="text-sm tracking-[0.3em] text-folha uppercase">{restaurant.name}</p>
       <h1 className="mt-2 font-serif text-5xl font-semibold">Política de Privacidade</h1>
-      <p className="mt-3 text-sm text-madeira/60">Atualizada em {UPDATED_AT}</p>
+      <p className="mt-3 text-sm text-madeira/70">Atualizada em {UPDATED_AT}</p>
 
       <p className="mt-8 text-lg leading-relaxed">
         Levamos seus dados a sério. Aqui explicamos, de forma simples, quais informações pedimos no site, para que elas

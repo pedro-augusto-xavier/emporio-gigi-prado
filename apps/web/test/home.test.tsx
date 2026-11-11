@@ -81,7 +81,10 @@ describe('página inicial', () => {
   it('todas as fotos com conteúdo têm descrição (acessibilidade)', () => {
     renderHome();
     // Fotos só decorativas usam alt="" e ficam fora da lista de imagens de propósito.
-    for (const img of screen.getAllByRole('img')) expect(img.getAttribute('alt')).toBeTruthy();
+    // As estrelas das avaliações são role="img" com aria-label ("5 de 5 estrelas").
+    for (const img of screen.getAllByRole('img')) {
+      expect(img.getAttribute('alt') ?? img.getAttribute('aria-label')).toBeTruthy();
+    }
   });
 });
 

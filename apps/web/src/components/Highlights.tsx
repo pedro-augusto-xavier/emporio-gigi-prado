@@ -42,7 +42,7 @@ function PhotoCard({ image, alt, label, title, text, href }: CardProps) {
       <div className="absolute inset-0 bg-linear-to-t from-madeira-escura/95 via-madeira-escura/60 to-madeira-escura/10" />
       <div className="relative p-6 sm:p-8">
         <span className="text-xs tracking-[0.25em] uppercase underline underline-offset-4">{label}</span>
-        <h3 className="mt-2 font-serif text-3xl font-semibold sm:text-4xl">{title}</h3>
+        <h2 className="mt-2 font-serif text-3xl font-semibold sm:text-4xl">{title}</h2>
         <p className="mt-2 max-w-lg text-sm text-creme/90 sm:text-base">{text}</p>
       </div>
     </CardLink>

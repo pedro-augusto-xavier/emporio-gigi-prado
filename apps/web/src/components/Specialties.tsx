@@ -76,7 +76,7 @@ export function Specialties() {
           ))}
         </div>
 
-        <p aria-hidden="true" className="mt-3 text-center text-xs tracking-wide opacity-60 md:hidden">Arraste para o lado →</p>
+        <p aria-hidden="true" className="mt-3 text-center text-xs tracking-wide opacity-75 md:hidden">Arraste para o lado →</p>
 
         <Reveal className="mt-10 text-center md:mt-12">
           <Link

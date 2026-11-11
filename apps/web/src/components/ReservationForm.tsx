@@ -173,7 +173,7 @@ export function ReservationForm() {
                 >
                   Avisar o restaurante pelo WhatsApp
                 </a>
-                <p className="mt-4 text-sm text-madeira/60">
+                <p className="mt-4 text-sm text-madeira/70">
                   Guarde o código. Precisa mudar ou cancelar? Fale com a gente pelo WhatsApp informando o código.
                 </p>
                 <button type="button" onClick={startOver} className="mt-4 text-sm text-folha underline">
