@@ -1,10 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router';
-import { fetchMenu, formatPrice, type MenuCategory, type MenuItem, type MenuSection } from '../api';
+import { formatPrice, type MenuCategory, type MenuItem, type MenuSection } from '../api';
 import { Reveal } from '../components/Reveal';
-import { whatsappLink } from '../config';
-
-type LoadState = { status: 'loading' } | { status: 'error' } | { status: 'ready'; categories: MenuCategory[] };
+import { menu } from '../menu';
 
 const CHEF_CATEGORY = 'Sugestões do Chef';
 
@@ -50,7 +48,7 @@ function ItemRow({ item, dark = false }: { item: MenuItem; dark?: boolean }) {
         </span>
       </div>
       {item.description && (
-        <p className={`mt-1 text-sm leading-relaxed ${dark ? 'text-creme/65' : 'text-madeira/60'}`}>{item.description}</p>
+        <p className={`mt-1 text-sm leading-relaxed ${dark ? 'text-creme/65' : 'text-madeira/70'}`}>{item.description}</p>
       )}
     </li>
   );
@@ -93,9 +91,7 @@ function CategorySection({ category }: { category: MenuCategory }) {
 }
 
 export function MenuPage() {
-  const [state, setState] = useState<LoadState>({ status: 'loading' });
   const [search, setSearch] = useState('');
-  const [attempt, setAttempt] = useState(0);
   const [activeId, setActiveId] = useState<string | null>(null);
   const navRef = useRef<HTMLElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
@@ -113,29 +109,14 @@ export function MenuPage() {
     if (list && window.scrollY > list.offsetTop - 200) window.scrollTo({ top: list.offsetTop - 260 });
   }
 
-  useEffect(() => {
-    const controller = new AbortController();
-    setState({ status: 'loading' });
-    fetchMenu(controller.signal)
-      .then((categories) => setState({ status: 'ready', categories }))
-      .catch((error: unknown) => {
-        if (!controller.signal.aborted) {
-          console.error(error);
-          setState({ status: 'error' });
-        }
-      });
-    return () => controller.abort();
-  }, [attempt]);
-
   const visible = useMemo(() => {
-    if (state.status !== 'ready') return [];
     const query = normalize(search.trim());
     // Sem busca: só a aba escolhida. Com busca: procura no cardápio inteiro.
-    if (!query) return state.categories.filter((category) => category.section === tab);
-    return state.categories
+    if (!query) return menu.filter((category) => category.section === tab);
+    return menu
       .map((category) => ({ ...category, items: category.items.filter((item) => matches(item, query)) }))
       .filter((category) => category.items.length > 0);
-  }, [state, search, tab]);
+  }, [search, tab]);
 
   // Acende o botão da categoria que está no meio da tela enquanto a pessoa rola.
   useEffect(() => {
@@ -247,42 +228,11 @@ export function MenuPage() {
       </div>
 
       <div ref={listRef} className="mx-auto max-w-6xl space-y-8 px-4 py-12 sm:px-6">
-        {searching && state.status === 'ready' && visible.length > 0 && (
-          <p className="text-center text-sm text-madeira/60">Buscando em todo o cardápio (almoço, café e bebidas).</p>
-        )}
-        {state.status === 'loading' && (
-          <div aria-label="Carregando cardápio" className="space-y-4 rounded-2xl bg-white p-8 shadow-md">
-            {Array.from({ length: 6 }, (_, i) => (
-              <div key={i} className="h-6 animate-pulse rounded bg-madeira/10" style={{ width: `${90 - i * 8}%` }} />
-            ))}
-          </div>
+        {searching && visible.length > 0 && (
+          <p className="text-center text-sm text-madeira/70">Buscando em todo o cardápio (almoço, café e bebidas).</p>
         )}
 
-        {state.status === 'error' && (
-          <div role="alert" className="rounded-2xl bg-white p-10 text-center shadow-md">
-            <p className="font-serif text-3xl font-semibold">Não conseguimos carregar o cardápio agora</p>
-            <p className="mt-2 text-madeira/70">Tente de novo em instantes ou fale com a gente pelo WhatsApp.</p>
-            <div className="mt-6 flex flex-wrap justify-center gap-3">
-              <button
-                type="button"
-                onClick={() => setAttempt((n) => n + 1)}
-                className="rounded-full bg-folha px-6 py-2 font-medium text-creme hover:bg-folha-escura"
-              >
-                Tentar de novo
-              </button>
-              <a
-                href={whatsappLink('Olá! Gostaria de ver o cardápio do Empório.')}
-                target="_blank"
-                rel="noreferrer"
-                className="rounded-full border-2 border-madeira px-6 py-2 font-medium hover:bg-madeira hover:text-creme"
-              >
-                Pedir pelo WhatsApp
-              </a>
-            </div>
-          </div>
-        )}
-
-        {state.status === 'ready' && visible.length === 0 && (
+        {visible.length === 0 && (
           <p className="text-center text-lg text-madeira/70">
             Nenhum prato encontrado para “{search}”.{' '}
             <button type="button" onClick={() => setSearch('')} className="text-folha underline">
@@ -297,12 +247,10 @@ export function MenuPage() {
           </Reveal>
         ))}
 
-        {state.status === 'ready' && (
-          <div className="pt-4 text-center text-sm text-madeira/60">
-            <p>Preços e pratos podem mudar sem aviso. Itens “Consulte”: pergunte ao atendente.</p>
-            <p className="mt-1">Beba com moderação. Venda de bebidas alcoólicas proibida para menores de 18 anos.</p>
-          </div>
-        )}
+        <div className="pt-4 text-center text-sm text-madeira/70">
+          <p>Preços e pratos podem mudar sem aviso. Itens “Consulte”: pergunte ao atendente.</p>
+          <p className="mt-1">Beba com moderação. Venda de bebidas alcoólicas proibida para menores de 18 anos.</p>
+        </div>
       </div>
     </>
   );

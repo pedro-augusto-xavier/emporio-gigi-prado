@@ -20,13 +20,6 @@ export interface MenuCategory {
   items: MenuItem[];
 }
 
-export async function fetchMenu(signal?: AbortSignal): Promise<MenuCategory[]> {
-  const response = await fetch('/api/menu', { signal });
-  if (!response.ok) throw new Error(`Erro ${response.status} ao carregar o cardápio`);
-  const body = (await response.json()) as { categories: MenuCategory[] };
-  return body.categories;
-}
-
 /** Erro vindo da API, com o código (ex.: NO_AVAILABILITY) e a mensagem pronta para mostrar. */
 export class ApiError extends Error {
   constructor(
