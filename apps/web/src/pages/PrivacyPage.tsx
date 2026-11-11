@@ -37,6 +37,10 @@ export function PrivacyPage() {
             <strong>Se você criar uma conta:</strong> nome, e-mail, telefone e senha. A senha é guardada de forma
             embaralhada e nem nós conseguimos vê-la.
           </li>
+          <li>
+            <strong>Ao navegar:</strong> contamos as visitas de forma anônima (página aberta, país e tipo de aparelho),
+            pelo Vercel Analytics, sem cookies e sem identificar você.
+          </li>
         </ul>
         <p>Não pedimos CPF nem dados de cartão no site.</p>
       </Section>
